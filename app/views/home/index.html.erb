@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Inverge</title>
+    
+    <!-- Favicon -->
+    <link href="<%= image_path "logos/icon.ico" %>" rel="shortcut icon" />
+    
+    <!-- Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,700,400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700'          rel='stylesheet' type='text/css'>
+    
+    <!-- CSS -->
+    <%= include_ember_stylesheet_tags :inverge %>
+    <%= stylesheet_link_tag "application", media: "all" %>
+    
+    
+    <!-- JS -->
+    <%= include_ember_script_tags :inverge %>
+    <%= javascript_include_tag "application" %>
+    
+    <!-- CSRF Tokens -->
+    <%= csrf_meta_tags %>
+  </head>
+  
+  <body></body>
+</html>
