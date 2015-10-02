@@ -20,7 +20,7 @@ class CreateExperiences < ActiveRecord::Migration
       t.belongs_to :user,         index: true, null: false
       
       # Always include timestamps
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

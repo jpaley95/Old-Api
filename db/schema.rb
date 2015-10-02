@@ -11,29 +11,87 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150702161500) do
+ActiveRecord::Schema.define(version: 20151002191100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "communities", force: :cascade do |t|
+    t.string   "name",                            null: false
+    t.string   "headline"
+    t.string   "video"
+    t.string   "domains"
+    t.text     "policy"
+    t.text     "description"
+    t.string   "website"
+    t.string   "facebook"
+    t.string   "twitter"
+    t.string   "linkedin"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
+    t.string   "logo_file_name"
+    t.string   "logo_content_type"
+    t.integer  "logo_file_size"
+    t.datetime "logo_updated_at"
+    t.date     "founded_at"
+    t.datetime "archived_at"
+    t.integer  "category",                        null: false
+    t.integer  "manage_profile",      default: 0, null: false
+    t.integer  "manage_members",      default: 0, null: false
+    t.integer  "manage_children",     default: 0, null: false
+    t.integer  "manage_posts",        default: 0, null: false
+    t.integer  "manage_listings",     default: 0, null: false
+    t.integer  "manage_resources",    default: 0, null: false
+    t.integer  "manage_events",       default: 0, null: false
+    t.integer  "access_events",       default: 0, null: false
+    t.integer  "access_resources",    default: 0, null: false
+    t.integer  "access_statistics",   default: 0, null: false
+    t.integer  "location_id"
+    t.integer  "community_id"
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
+  add_index "communities", ["category"], name: "index_communities_on_category", using: :btree
+  add_index "communities", ["community_id"], name: "index_communities_on_community_id", using: :btree
+  add_index "communities", ["location_id"], name: "index_communities_on_location_id", using: :btree
+
+  create_table "community_members", force: :cascade do |t|
+    t.integer  "user_id",      null: false
+    t.integer  "community_id", null: false
+    t.integer  "role_id",      null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "community_members", ["user_id", "community_id"], name: "index_community_members_on_user_id_and_community_id", unique: true, using: :btree
+
+  create_table "degrees", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "degrees", ["name"], name: "index_degrees_on_name", unique: true, using: :btree
+
   create_table "educations", force: :cascade do |t|
     t.integer  "school_id",   null: false
+    t.integer  "degree_id"
     t.date     "started_at"
     t.date     "finished_at"
-    t.string   "degree"
-    t.string   "field"
     t.text     "grades"
     t.text     "activities"
     t.text     "classes"
     t.text     "honors"
     t.text     "description"
     t.integer  "user_id",     null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
-  add_index "educations", ["degree"], name: "index_educations_on_degree", using: :btree
-  add_index "educations", ["field"], name: "index_educations_on_field", using: :btree
+  add_index "educations", ["degree_id"], name: "index_educations_on_degree_id", using: :btree
   add_index "educations", ["school_id"], name: "index_educations_on_school_id", using: :btree
   add_index "educations", ["user_id"], name: "index_educations_on_user_id", using: :btree
 
@@ -46,24 +104,41 @@ ActiveRecord::Schema.define(version: 20150702161500) do
     t.date     "finished_at"
     t.integer  "location_id"
     t.integer  "user_id",      null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   add_index "experiences", ["location_id"], name: "index_experiences_on_location_id", using: :btree
   add_index "experiences", ["team_id"], name: "index_experiences_on_team_id", using: :btree
   add_index "experiences", ["user_id"], name: "index_experiences_on_user_id", using: :btree
 
+  create_table "fields", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "fields", ["name"], name: "index_fields_on_name", unique: true, using: :btree
+
   create_table "handles", force: :cascade do |t|
     t.string   "username",     null: false
     t.integer  "actable_id",   null: false
     t.string   "actable_type", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   add_index "handles", ["actable_id", "actable_type"], name: "index_handles_on_actable_id_and_actable_type", unique: true, using: :btree
   add_index "handles", ["username"], name: "index_handles_on_username", unique: true, using: :btree
+
+  create_table "interests", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "tag_id",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "interests", ["user_id", "tag_id"], name: "index_interests_on_user_id_and_tag_id", unique: true, using: :btree
 
   create_table "locations", force: :cascade do |t|
     t.string   "description"
@@ -74,45 +149,29 @@ ActiveRecord::Schema.define(version: 20150702161500) do
     t.string   "country"
     t.decimal  "latitude"
     t.decimal  "longitude"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "locations", ["latitude", "longitude"], name: "index_locations_on_latitude_and_longitude", using: :btree
 
-  create_table "problem_followers", force: :cascade do |t|
-    t.integer  "follower_id", null: false
-    t.integer  "followed_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "majors", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "field_id",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_index "problem_followers", ["follower_id", "followed_id"], name: "index_problem_followers_on_follower_id_and_followed_id", unique: true, using: :btree
+  add_index "majors", ["user_id", "field_id"], name: "index_majors_on_user_id_and_field_id", unique: true, using: :btree
 
-  create_table "problem_promoters", force: :cascade do |t|
-    t.integer  "promoter_id", null: false
-    t.integer  "promoted_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+  create_table "minors", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "field_id",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
-  add_index "problem_promoters", ["promoter_id", "promoted_id"], name: "index_problem_promoters_on_promoter_id_and_promoted_id", unique: true, using: :btree
-
-  create_table "problems", force: :cascade do |t|
-    t.string   "name",               null: false
-    t.text     "text",               null: false
-    t.string   "photo_file_name",    null: false
-    t.string   "photo_content_type", null: false
-    t.integer  "photo_file_size",    null: false
-    t.datetime "photo_updated_at",   null: false
-    t.integer  "location_id"
-    t.integer  "user_id",            null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "problems", ["location_id"], name: "index_problems_on_location_id", using: :btree
-  add_index "problems", ["user_id"], name: "index_problems_on_user_id", using: :btree
+  add_index "minors", ["user_id", "field_id"], name: "index_minors_on_user_id_and_field_id", unique: true, using: :btree
 
   create_table "roles", force: :cascade do |t|
     t.string "name", null: false
@@ -121,23 +180,36 @@ ActiveRecord::Schema.define(version: 20150702161500) do
   add_index "roles", ["name"], name: "index_roles_on_name", unique: true, using: :btree
 
   create_table "schools", force: :cascade do |t|
-    t.string   "name",               null: false
+    t.string   "name",        null: false
     t.integer  "location_id"
-    t.string   "photo_file_name"
-    t.string   "photo_content_type"
-    t.integer  "photo_file_size"
-    t.datetime "photo_updated_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "schools", ["location_id"], name: "index_schools_on_location_id", using: :btree
 
+  create_table "skills", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "tag_id",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "skills", ["user_id", "tag_id"], name: "index_skills_on_user_id_and_tag_id", unique: true, using: :btree
+
+  create_table "tags", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "tags", ["name"], name: "index_tags_on_name", unique: true, using: :btree
+
   create_table "user_followers", force: :cascade do |t|
     t.integer  "follower_id", null: false
     t.integer  "followed_id", null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   add_index "user_followers", ["follower_id", "followed_id"], name: "index_user_followers_on_follower_id_and_followed_id", unique: true, using: :btree
@@ -145,8 +217,8 @@ ActiveRecord::Schema.define(version: 20150702161500) do
   create_table "user_roles", force: :cascade do |t|
     t.integer  "user_id",    null: false
     t.integer  "role_id",    null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_index "user_roles", ["user_id", "role_id"], name: "index_user_roles_on_user_id_and_role_id", unique: true, using: :btree
@@ -156,10 +228,10 @@ ActiveRecord::Schema.define(version: 20150702161500) do
     t.string   "last_name"
     t.date     "birthday"
     t.integer  "gender"
-    t.string   "photo_file_name"
-    t.string   "photo_content_type"
-    t.integer  "photo_file_size"
-    t.datetime "photo_updated_at"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
     t.text     "overview"
     t.text     "biography"
     t.text     "goals"
@@ -171,6 +243,7 @@ ActiveRecord::Schema.define(version: 20150702161500) do
     t.string   "facebook"
     t.string   "twitter"
     t.string   "linkedin"
+    t.string   "github"
     t.integer  "privacy"
     t.boolean  "is_superuser",           default: false, null: false
     t.integer  "location_id"
@@ -191,8 +264,8 @@ ActiveRecord::Schema.define(version: 20150702161500) do
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "authentication_token"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

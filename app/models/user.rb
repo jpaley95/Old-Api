@@ -4,10 +4,10 @@ class User < ActiveRecord::Base
   # t.string   "last_name"
   # t.date     "birthday"
   # t.integer  "gender"
-  # t.string   "photo_file_name"
-  # t.string   "photo_content_type"
-  # t.integer  "photo_file_size"
-  # t.datetime "photo_updated_at"
+  # t.string   "avatar_file_name"
+  # t.string   "avatar_content_type"
+  # t.integer  "avatar_file_size"
+  # t.datetime "avatar_updated_at"
   # t.text     "overview"
   # t.text     "biography"
   # t.text     "goals"
@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   # t.string   "facebook"
   # t.string   "twitter"
   # t.string   "linkedin"
+  # t.string   "github"
   # t.integer  "privacy"
   # t.boolean  "is_superuser",           default: false, null: false
   # t.integer  "location_id"
@@ -39,8 +40,8 @@ class User < ActiveRecord::Base
   # t.string   "unlock_token"
   # t.datetime "locked_at"
   # t.string   "authentication_token"
-  # t.datetime "created_at"
-  # t.datetime "updated_at"
+  # t.datetime "created_at",                             null: false
+  # t.datetime "updated_at",                             null: false
   
   
   
@@ -50,13 +51,12 @@ class User < ActiveRecord::Base
   
   
   ## Relationships
-  has_many :problems
+  has_and_belongs_to_many :skills,    class_name: :Tag,  join_table: :skills
+  has_and_belongs_to_many :interests, class_name: :Tag,  join_table: :interests
+  has_and_belongs_to_many :roles,     class_name: :Role, join_table: :user_roles
   
-  has_many :problem_followers, foreign_key: :follower_id
-  has_many :problems_followed, through: :problem_followers, source: :problem
-  
-  has_many :problem_promoters, foreign_key: :promoter_id
-  has_many :problems_promoted, through: :problem_promoters, source: :problem
+  has_many :educations
+  has_many :experiences
   
   has_many :followed_user_followers, class_name: :UserFollower, foreign_key: :followed_id
   has_many :following, through: :followed_user_followers, source: :user
@@ -66,14 +66,12 @@ class User < ActiveRecord::Base
   
   belongs_to :location
   
-  has_and_belongs_to_many :roles_rel, join_table: :user_roles, class_name: :Role
-  
-  has_attached_file :photo, styles: { fluid: "300x", medium: "300x300#", thumb: "100x100#" }
+  has_attached_file :avatar, styles: { fluid: "300x", medium: "300x300#", thumb: "100x100#" }
   
   
   
   ## Validation
-  validates_attachment_content_type :photo, :content_type => /\Aimage\/.*\Z/
+  validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
   
   
   
@@ -83,8 +81,13 @@ class User < ActiveRecord::Base
   
   
   
-  ## Enums
-  enum gender: [:male, :female, :other, :none]
+  ## Enumerations
+  enum gender: [
+    :male,
+    :female,
+    :other,
+    :decline
+  ]
   enum looking_for: [
     :cofounder,
     :join_team,
@@ -93,8 +96,8 @@ class User < ActiveRecord::Base
     :internship,
     :collaboration,
     :mentorship,
-    :management,
-    :resources
+    :resources,
+    :something_else
   ]
   
   
@@ -109,16 +112,23 @@ class User < ActiveRecord::Base
   
   
   
-  ## Override roles setter and getter
-  def valid_roles
-    ['entrepreneur', 'freelancer', 'instructor', 'mentor']
-  end
-  def roles
-    roles_rel.map(&:name)
+  ## Override roles setter
+  def self.valid_roles
+    ['entrepreneur', 'freelancer', 'instructor', 'mentor', 'student', 'other']
   end
   def roles=(roles)
-    roles = valid_roles & roles.map(&:downcase).map!(&:strip)
-    self.roles_rel = Role.where(name: roles)
+    names  = User.valid_roles & roles.map(&:downcase).map!(&:strip)
+    @roles = Role.where(name: names)
+  end
+  
+  
+  
+  ## Override skills and interests setters
+  def skills=(skills)
+    @skills = Tag.construct(skills)
+  end
+  def interests=(interests)
+    @interests = Tag.construct(interests)
   end
   
   

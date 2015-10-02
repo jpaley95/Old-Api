@@ -10,10 +10,10 @@ source 'https://rubygems.org'
 gem 'aws-sdk', '< 2.0'
 
 # Connection with Twitter API
-#gem 'twitter'
+# gem 'twitter'
 
 # Connection with LinkedIn API
-# gem "linkedin-oauth2"
+# gem 'linkedin-oauth2'
 
 
 
@@ -44,6 +44,9 @@ gem 'rails'
 # Read more: http://stackoverflow.com/questions/30925008/just-installed-rails-on-yosemite-and-rails-server-fails
 gem 'rack', '1.6.1'
 
+# Enable CORS on Rack (Enable cross-domain scripting)
+gem 'rack-cors'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
@@ -51,18 +54,12 @@ gem 'rack', '1.6.1'
 # gem 'unicorn'
 # gem 'puma'
 
-# Easy comments on models
-# gem 'acts_as_commentable'
-
 # Asset pipeline manager
 gem 'sprockets'
 
-# Soft-deleting models
-# gem 'paranoia'
-
-# User management
+# User authentication and management
 gem 'devise'
-#gem 'cancancan'
+# gem 'cancancan'
 
 # File uploading
 gem 'paperclip', '>= 4.0'
@@ -76,7 +73,7 @@ gem 'responders'
 # ActsAs for Multiple Table Inheritance (MTI)
 gem 'active_record-acts_as'
 
-# Active Model Serializers for turning records into JSON
+# Active Model Serializers for turning records into Ember-friendly JSON
 gem 'active_model_serializers'
 
 
@@ -176,6 +173,3 @@ gem 'rails_12factor', group: :production
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
-
-# Enable CORS on Rack
-gem 'rack-cors'

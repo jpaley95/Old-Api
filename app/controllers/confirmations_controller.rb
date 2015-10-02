@@ -10,7 +10,7 @@ class ConfirmationsController < Devise::ConfirmationsController
   ## POST /confirmations
   def create
     super do |user|
-      respond_with user, status: :created and return
+      render json: user, status: :created and return
     end
   end
   
@@ -18,7 +18,7 @@ class ConfirmationsController < Devise::ConfirmationsController
   ## GET /confirmations?confirmation_token=abcdef
   def show
     super do |user|
-      respond_with user and return
+      render json: user and return
     end
   end
 end

@@ -7,7 +7,7 @@ class CreateUserRoles < ActiveRecord::Migration
       t.index [:user_id, :role_id], unique: true
       
       # Always include timestamps
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

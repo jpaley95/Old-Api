@@ -6,7 +6,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string     :last_name
       t.date       :birthday
       t.integer    :gender
-      t.attachment :photo
+      t.attachment :avatar
       
       # Biographical information
       t.text :overview
@@ -24,6 +24,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :facebook
       t.string :twitter
       t.string :linkedin
+      t.string :github
       
       # Privacy settings
       t.integer :privacy
@@ -83,7 +84,7 @@ class CreateUsers < ActiveRecord::Migration
       
       
       # Always include timestamps
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

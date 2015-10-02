@@ -10,7 +10,7 @@ class CreateHandles < ActiveRecord::Migration
       t.index [:actable_id, :actable_type], unique: true
       
       # Always include timestamps
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

@@ -21,15 +21,10 @@ Rails.application.routes.draw do
   end
   
   
-  ## Problem Resource
-  resources :problems, only: [:index, :create, :show, :update, :destroy] do
-    resources :followers, only: [:index, :create, :destroy], controller: :problem_followers
-    resources :promoters, only: [:index, :create, :destroy], controller: :problem_promoters
-  end
-  
-  
   ## Community Resource
-  resources :communities, only: [:index, :create, :show, :update, :destroy]
+  resources :communities, only: [:index, :create, :show, :update, :destroy] do
+    resources :members, only: [:index, :create, :update, :destroy], controller: :community_members
+  end
   
   
   

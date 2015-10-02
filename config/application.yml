@@ -1,0 +1,41 @@
+# Add configuration values here, as shown below.
+#
+# pusher_app_id: "2954"
+# pusher_key: 7381a978f7dd7f9a1117
+# pusher_secret: abdc3b896a0ffb85d373
+# stripe_api_key: sk_test_2J0l093xOyW72XUYJHE4Dv2r
+# stripe_publishable_key: pk_test_ro9jV5SNwGb1yYlQfzG17LHK
+#
+# production:
+#   stripe_api_key: sk_live_EeHnL644i6zo4Iyq4v1KdV9H
+#   stripe_publishable_key: pk_live_9lcthxpSIHbGwmdO941O1XVU
+
+
+# LinkedIn
+linkedin_client_id:      "78d1sx46l12n4f"
+linkedin_client_secret:  "AbgiffC3CGrgNGWO"
+development:
+  linkedin_redirect_uri: "http://localhost:3000/linkedin/oauth2"
+production:
+  linkedin_redirect_uri: "https://www.inverge.us/linkedin/oauth2"
+  # linkedin_redirect_uri: "https://inverge.herokuapp.com/linkedin/oauth2"
+
+
+# Twitter
+twitter_consumer_key:    "YA9Ewi3stIhD3FHZTPGyHxM0d"
+twitter_consumer_secret: "FLYpY2cv4JLE0JY9ezDqPjgCdRGljOBkPBbJ0NBP6Qb5O7gcUD"
+twitter_access_token:    "95443327-qyoRGqI9wEtJQgKN6vfTiKWXqv9m6iyAmI8XxnbKw"
+twitter_access_secret:   "xNECzex7XrGsY3WpeoQ38UCcTWcptRTex9IImhbaGjBEg"
+
+
+# Amazon AWS
+aws_host_name:         "s3-us-west-2.amazonaws.com"
+aws_bucket_name:       "inverge-assets"
+aws_access_key_id:     "AKIAJDV7INVP25ULFO5A"
+aws_secret_access_key: "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"
+
+
+# Mailer
+development:
+  gmail_username: "inverge.dev@gmail.com"
+  gmail_password: "46#}YFA@m3h&uN%M"

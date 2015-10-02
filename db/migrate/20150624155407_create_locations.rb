@@ -17,7 +17,7 @@ class CreateLocations < ActiveRecord::Migration
       t.index   [:latitude, :longitude]
       
       # Always include timestamps
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

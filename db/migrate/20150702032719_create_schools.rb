@@ -7,11 +7,8 @@ class CreateSchools < ActiveRecord::Migration
       # Location
       t.belongs_to :location, index: true
       
-      # Picture (eventually)
-      t.attachment :photo
-      
       # Always include timestamps
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

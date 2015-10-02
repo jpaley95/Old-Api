@@ -2,20 +2,21 @@ class UsersController < ApplicationController
   # Filters
   before_action :authenticate_user_from_token!, except: [:create]
   
+  respond_to :html, :json
   
   
   
   # GET /users
   def index
     @users = User.all
-    respond_with @users
+    render json: @users
   end
   
   
   # GET /users/:id
   def show
     @user = User.find params[:id]
-    respond_with @user
+    render json: @user
   end
   
   
@@ -23,7 +24,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new user_params
     @user.save!
-    respond_with @user
+    render json: @user, status: :created
   end
   
   
@@ -31,7 +32,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find params[:id]
     @user.update! user_params
-    respond_with @user
+    render json: @user
   end
   
   
@@ -39,7 +40,7 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find params[:id]
     @user.destroy!
-    respond_with @user
+    render json: @user
   end
   
   

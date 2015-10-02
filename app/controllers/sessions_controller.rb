@@ -23,7 +23,7 @@ class SessionsController < Devise::SessionsController
   ## DELETE /sessions
   def destroy
     super do |user|
-      render head :no_content and return
+      render head: :no_content and return
     end
   end
   
