@@ -14,7 +14,9 @@ Role.create! [
   { name: 'teammate'      },
   { name: 'intern'        },
   { name: 'board'         },
-  { name: 'investor'      }
+  { name: 'investor'      },
+  { name: 'public'        },
+  { name: 'private'       }
 ]
 
 

@@ -37,6 +37,12 @@ class Community < ActiveRecord::Base
   # t.datetime "updated_at",                      null: false
   
   
+  
+  ## Actable (MTI)
+  acts_as :handle
+  
+  
+  
   ## Relationships
   belongs_to :parent,   class_name: :Community, foreign_key: :community_id
   has_many   :children, class_name: :Community, foreign_key: :community_id, dependent: :restrict_with_exception
@@ -44,6 +50,18 @@ class Community < ActiveRecord::Base
   has_many :members, class_name: :CommunityMember, foreign_key: :community_id
   
   belongs_to :location
+  
+  belongs_to :manage_profile,    class_name: :Role, foreign_key: :manage_profile
+  belongs_to :manage_members,    class_name: :Role, foreign_key: :manage_members
+  belongs_to :manage_children,   class_name: :Role, foreign_key: :manage_children
+  belongs_to :manage_posts,      class_name: :Role, foreign_key: :manage_posts
+  belongs_to :manage_listings,   class_name: :Role, foreign_key: :manage_listings
+  belongs_to :manage_resources,  class_name: :Role, foreign_key: :manage_resources
+  belongs_to :manage_events,     class_name: :Role, foreign_key: :manage_events
+  
+  belongs_to :access_events,     class_name: :Role, foreign_key: :access_events
+  belongs_to :access_resources,  class_name: :Role, foreign_key: :access_resources
+  belongs_to :access_statistics, class_name: :Role, foreign_key: :access_statistics
   
   #has_many   :outgoing_requests, as: :requestor, class_name: :Request
   #has_many   :incoming_requests, as: :actor,     class_name: :Request
@@ -71,6 +89,9 @@ class Community < ActiveRecord::Base
     :organization,
     :other
   ]
+  def self.access
+    ['owners', 'admins', 'members']
+  end
   
   
   

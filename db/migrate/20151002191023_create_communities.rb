@@ -27,18 +27,18 @@ class CreateCommunities < ActiveRecord::Migration
       t.integer :category, null: false, index: true
       
       # Permissions
-      t.integer :manage_profile,   null: false, default: 0
-      t.integer :manage_members,   null: false, default: 0
-      t.integer :manage_children,  null: false, default: 0
-      t.integer :manage_posts,     null: false, default: 0
-      t.integer :manage_listings,  null: false, default: 0
-      t.integer :manage_resources, null: false, default: 0
-      t.integer :manage_events,    null: false, default: 0
+      t.integer :manage_profile,    null: false
+      t.integer :manage_members,    null: false
+      t.integer :manage_children,   null: false
+      t.integer :manage_posts,      null: false
+      t.integer :manage_listings,   null: false
+      t.integer :manage_resources,  null: false
+      t.integer :manage_events,     null: false
       
       # Privacy
-      t.integer :access_events,     null: false, default: 0
-      t.integer :access_resources,  null: false, default: 0
-      t.integer :access_statistics, null: false, default: 0
+      t.integer :access_events,     null: false
+      t.integer :access_resources,  null: false
+      t.integer :access_statistics, null: false
       
       # Location
       t.belongs_to :location, index: true
