@@ -1,6 +1,6 @@
 class Community < ActiveRecord::Base
   ## Database Fields
-  # t.string   "name",                            null: false
+  # t.string   "name",                     null: false
   # t.string   "headline"
   # t.string   "video"
   # t.string   "domains"
@@ -10,31 +10,23 @@ class Community < ActiveRecord::Base
   # t.string   "facebook"
   # t.string   "twitter"
   # t.string   "linkedin"
-  # t.string   "avatar_file_name"
-  # t.string   "avatar_content_type"
-  # t.integer  "avatar_file_size"
-  # t.datetime "avatar_updated_at"
-  # t.string   "logo_file_name"
-  # t.string   "logo_content_type"
-  # t.integer  "logo_file_size"
-  # t.datetime "logo_updated_at"
   # t.date     "founded_at"
   # t.datetime "archived_at"
-  # t.integer  "category",                        null: false
-  # t.integer  "manage_profile",      default: 0, null: false
-  # t.integer  "manage_members",      default: 0, null: false
-  # t.integer  "manage_children",     default: 0, null: false
-  # t.integer  "manage_posts",        default: 0, null: false
-  # t.integer  "manage_listings",     default: 0, null: false
-  # t.integer  "manage_resources",    default: 0, null: false
-  # t.integer  "manage_events",       default: 0, null: false
-  # t.integer  "access_events",       default: 0, null: false
-  # t.integer  "access_resources",    default: 0, null: false
-  # t.integer  "access_statistics",   default: 0, null: false
+  # t.integer  "category",                 null: false
+  # t.integer  "profile_permission_id",    null: false
+  # t.integer  "members_permission_id",    null: false
+  # t.integer  "children_permission_id",   null: false
+  # t.integer  "statistics_permission_id", null: false
+  # t.integer  "posts_permission_id",      null: false
+  # t.integer  "listings_permission_id",   null: false
+  # t.integer  "resources_permission_id",  null: false
+  # t.integer  "events_permission_id",     null: false
+  # t.integer  "events_privacy_id",        null: false
+  # t.integer  "resources_privacy_id",     null: false
   # t.integer  "location_id"
   # t.integer  "community_id"
-  # t.datetime "created_at",                      null: false
-  # t.datetime "updated_at",                      null: false
+  # t.datetime "created_at",               null: false
+  # t.datetime "updated_at",               null: false
   
   
   
@@ -44,41 +36,37 @@ class Community < ActiveRecord::Base
   
   
   ## Relationships
+  has_many :resources
+  has_many :categories, through: :resources
+  
   belongs_to :parent,   class_name: :Community, foreign_key: :community_id
   has_many   :children, class_name: :Community, foreign_key: :community_id, dependent: :restrict_with_exception
   
   has_many :members, class_name: :CommunityMember, foreign_key: :community_id
   
+  has_and_belongs_to_many :teams, join_table: :community_teams
+  
   belongs_to :location
   
-  belongs_to :manage_profile,    class_name: :Role, foreign_key: :manage_profile
-  belongs_to :manage_members,    class_name: :Role, foreign_key: :manage_members
-  belongs_to :manage_children,   class_name: :Role, foreign_key: :manage_children
-  belongs_to :manage_posts,      class_name: :Role, foreign_key: :manage_posts
-  belongs_to :manage_listings,   class_name: :Role, foreign_key: :manage_listings
-  belongs_to :manage_resources,  class_name: :Role, foreign_key: :manage_resources
-  belongs_to :manage_events,     class_name: :Role, foreign_key: :manage_events
+  belongs_to :profile_permission,    class_name: :Permission
+  belongs_to :members_permission,    class_name: :Permission
+  belongs_to :children_permission,   class_name: :Permission
+  belongs_to :statistics_permission, class_name: :Permission
+  belongs_to :posts_permission,      class_name: :Permission
+  belongs_to :listings_permission,   class_name: :Permission
+  belongs_to :resources_permission,  class_name: :Permission
+  belongs_to :events_permission,     class_name: :Permission
   
-  belongs_to :access_events,     class_name: :Role, foreign_key: :access_events
-  belongs_to :access_resources,  class_name: :Role, foreign_key: :access_resources
-  belongs_to :access_statistics, class_name: :Role, foreign_key: :access_statistics
+  belongs_to :events_privacy,    class_name: :Privacy
+  belongs_to :resources_privacy, class_name: :Privacy
   
-  #has_many   :outgoing_requests, as: :requestor, class_name: :Request
-  #has_many   :incoming_requests, as: :actor,     class_name: :Request
-  
-  #has_many   :team_communities, dependent: :destroy
-  #has_many   :teams,            through: :team_communities
-  
-  has_attached_file :logo,   styles: { fluid: "300x", medium: "300x300#", thumb: "100x100#" }, default_url: lambda { |image| ActionController::Base.helpers.asset_path("entities/Community.png") }
-  has_attached_file :avatar, styles: { fluid: "300x", medium: "300x300#", thumb: "100x100#" }, default_url: lambda { |image| ActionController::Base.helpers.asset_path("entities/Community.png") }
+  has_one :logo,   class_name: :Image, as: :owner
+  has_one :avatar, class_name: :Image, as: :owner
   
   
   
   ## Validation
-  validates :name, presence: true
-  
-  validates_attachment_content_type :logo,   :content_type => /\Aimage\/.*\Z/
-  validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
+  validates :name, presence: true/
   
   
   
@@ -89,9 +77,6 @@ class Community < ActiveRecord::Base
     :organization,
     :other
   ]
-  def self.access
-    ['owners', 'admins', 'members']
-  end
   
   
   
@@ -107,6 +92,32 @@ class Community < ActiveRecord::Base
   end
   def self.archived
     self.where.not archived_at:  nil
+  end
+  
+  
+  
+  ## Permission
+  def permission
+    {
+      profile:    profile_permission.name,
+      members:    members_permission.name,
+      children:   children_permission.name,
+      statistics: statistics_permission.name,
+      posts:      posts_permission.name,
+      listings:   listings_permission.name,
+      resources:  resources_permission.name,
+      events:     events_permission.name
+    }
+  end
+  
+  
+  
+  ## Privacy
+  def privacy
+    {
+      events:    events_privacy.name,
+      resources: resources_privacy.name
+    }
   end
   
   

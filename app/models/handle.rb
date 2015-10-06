@@ -1,5 +1,5 @@
 class Handle < ActiveRecord::Base
-  # Database Fields
+  ## Database Fields
   # t.string   "username",     null: false
   # t.integer  "actable_id",   null: false
   # t.string   "actable_type", null: false
@@ -7,22 +7,33 @@ class Handle < ActiveRecord::Base
   # t.datetime "updated_at"
   
   
-  # Actable (MTI)
+  
+  ## Actable (MTI)
   actable
   
   
-  # Validation
+  
+  ## Validation
   validates :username, presence: true, uniqueness: true
   validate  :check_username_format
   
   
-  # Validation routine to check if the username is formatted correctly
+  
+  ## Relationships
+  has_many :posts
+  has_many :listings
+  has_and_belongs_to_many :threads, join_table: :thread_participants
+  
+  
+  
+  ## Validation routine to check if the username is formatted correctly
   def check_username_format
     errors.add(:username, "is not a valid username") unless username =~ Handle.validation_regex
   end
   
   
-  # Handle-matching regular expressions
+  
+  ## Handle-matching regular expressions
   def self.validation_regex
     /^[a-z0-9_]{1,15}$/
   end
@@ -32,16 +43,17 @@ class Handle < ActiveRecord::Base
   
   
   
-  # Override username setter to fix the following formatting mistakes
-  #   - leading and/or trailing whitespace
-  #   - uppercase characters
-  #   - leading at character
+  ## Override username setter to fix the following formatting mistakes
+  ##   - leading and/or trailing whitespace
+  ##   - uppercase characters
+  ##   - leading at character
   def username=(s)
     write_attribute(:username, s.to_s.strip.sub(/^@/, '').downcase)
   end
   
   
-  # Override to_s
+  
+  ## Override to_s
   def to_s
     '@' + username
   end

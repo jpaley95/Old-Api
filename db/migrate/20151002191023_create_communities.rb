@@ -15,10 +15,6 @@ class CreateCommunities < ActiveRecord::Migration
       t.string :twitter
       t.string :linkedin
       
-      # Photos
-      t.attachment :avatar
-      t.attachment :logo
-      
       # Date fields
       t.date     :founded_at
       t.datetime :archived_at
@@ -26,19 +22,19 @@ class CreateCommunities < ActiveRecord::Migration
       # Category (enum)
       t.integer :category, null: false, index: true
       
-      # Permissions
-      t.integer :manage_profile,    null: false
-      t.integer :manage_members,    null: false
-      t.integer :manage_children,   null: false
-      t.integer :manage_posts,      null: false
-      t.integer :manage_listings,   null: false
-      t.integer :manage_resources,  null: false
-      t.integer :manage_events,     null: false
+      # Permissions (internal access)
+      t.belongs_to :profile_permission,    null: false
+      t.belongs_to :members_permission,    null: false
+      t.belongs_to :children_permission,   null: false
+      t.belongs_to :statistics_permission, null: false
+      t.belongs_to :posts_permission,      null: false
+      t.belongs_to :listings_permission,   null: false
+      t.belongs_to :resources_permission,  null: false
+      t.belongs_to :events_permission,     null: false
       
-      # Privacy
-      t.integer :access_events,     null: false
-      t.integer :access_resources,  null: false
-      t.integer :access_statistics, null: false
+      # Privacy (external access)
+      t.belongs_to :events_privacy,    null: false
+      t.belongs_to :resources_privacy, null: false
       
       # Location
       t.belongs_to :location, index: true

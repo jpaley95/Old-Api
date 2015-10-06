@@ -7,26 +7,26 @@ class CommunityMember < ActiveRecord::Base
   # t.datetime "updated_at",   null: false
   
   
-  # Relationships
+  ## Relationships
   belongs_to :user
   belongs_to :role
   belongs_to :community
   
   
-  # Validation
+  ## Validation
   validates :user,      presence: true
   validates :role,      presence: true
   validates :community, presence: true
   validate :role_must_be_in_whitelist
   
   
-  ## Cutome validation for role
-  def self.valid_roles
+  ## Custom validation for role
+  def self.role_whitelist
     ['owner', 'administrator', 'member']
   end
   def role_must_be_in_whitelist
-    unless CommunityMember.valid_roles.include? role.name
-      errors.add(:role, 'must be either "owner", "administrator", or "member"')
+    unless self.role_whitelist.include? role.name
+      errors.add(:role, 'must be one of the following: "' + self.role_whitelist.join('", "') + '"')
     end
-  end1
+  end
 end

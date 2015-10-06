@@ -14,17 +14,57 @@ Rails.application.routes.draw do
   # root to: 'home#index'
   
   
-  ## User Resource
+  ## User, UserFollower, Education, Experience, School
+  resources :schools, only: [:index, :create, :show, :update, :destroy]
+  resources :educations, only: [:index, :create, :show, :update, :destroy]
+  resources :experiences, only: [:index, :create, :show, :update, :destroy]
   resources :users, only: [:index, :create, :show, :update, :destroy] do
     resources :followers, only: [:index, :create, :destroy], controller: :user_followers
     resources :following, only: [:index                   ], controller: :user_following
   end
   
   
-  ## Community Resource
+  ## Community, CommunityMember, Resource, Category
+  resources :resources, only: [:index, :create, :show, :update, :destroy]
+  resources :categories, only: [:show]
   resources :communities, only: [:index, :create, :show, :update, :destroy] do
     resources :members, only: [:index, :create, :update, :destroy], controller: :community_members
   end
+  
+  
+  ## Team, TeamMember, Kpi, SuccessMetric, MetricChange
+  resources :kpis, only: [:index, :create, :show, :update, :destroy]
+  resources :success_metric, only: [:index, :create, :show, :update, :destroy]
+  resources :metric_change, only: [:index, :create, :show, :update, :destroy]
+  resources :teams, only: [:index, :create, :show, :update, :destroy] do
+    resources :members, only: [:index, :create, :update, :destroy], controller: :team_members
+  end
+  
+  
+  ## Listing, ListingMember
+  resources :listings, only: [:index, :create, :show, :update, :destroy] do
+    resources :members, only: [:index, :create, :update, :destroy], controller: :listing_members
+  end
+  
+  
+  ## Thread, Message
+  resources :threads, only: [:index, :create, :show, :update, :destroy]
+  resources :messages, only: [:index, :create, :show, :update, :destroy]
+  
+  
+  ## Tag
+  
+  
+  ## File
+  resources :files, only: [:index, :create, :show, :update, :destroy]
+  
+  
+  ## Handle
+  resources :handles, only: [:index, :show]
+  
+  
+  ## Request
+  resources :requests, only: [:index, :create, :show, :update, :destroy]
   
   
   

@@ -14,9 +14,30 @@ Role.create! [
   { name: 'teammate'      },
   { name: 'intern'        },
   { name: 'board'         },
-  { name: 'investor'      },
-  { name: 'public'        },
-  { name: 'private'       }
+  { name: 'investor'      }
+]
+
+
+## Seed permissions table
+Permission.create! [
+  { name: 'leaders'        },
+  { name: 'teammates'      },
+  { name: 'interns'        },
+  { name: 'freelancers'    },
+  { name: 'mentors'        },
+  
+  { name: 'owners'         },
+  { name: 'administrators' },
+  { name: 'members'        }
+]
+
+
+## Seed privacies table
+Privacy.create! [
+  { name: 'public'      },
+  { name: 'communities' },
+  { name: 'connections' },
+  { name: 'private'     }
 ]
 
 

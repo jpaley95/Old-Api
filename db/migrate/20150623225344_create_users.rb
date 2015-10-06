@@ -2,11 +2,10 @@ class CreateUsers < ActiveRecord::Migration
   def change
     create_table :users do |t|
       # Personal information
-      t.string     :first_name
-      t.string     :last_name
-      t.date       :birthday
-      t.integer    :gender
-      t.attachment :avatar
+      t.string  :first_name
+      t.string  :last_name
+      t.date    :birthday
+      t.integer :gender
       
       # Biographical information
       t.text :overview

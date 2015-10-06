@@ -4,10 +4,6 @@ class User < ActiveRecord::Base
   # t.string   "last_name"
   # t.date     "birthday"
   # t.integer  "gender"
-  # t.string   "avatar_file_name"
-  # t.string   "avatar_content_type"
-  # t.integer  "avatar_file_size"
-  # t.datetime "avatar_updated_at"
   # t.text     "overview"
   # t.text     "biography"
   # t.text     "goals"
@@ -58,6 +54,12 @@ class User < ActiveRecord::Base
   has_many :educations
   has_many :experiences
   
+  has_many :team_members
+  has_many :community_members
+  
+  has_many :team_followers
+  has_many :teams_followed, through: :team_followers, source: :team
+  
   has_many :followed_user_followers, class_name: :UserFollower, foreign_key: :followed_id
   has_many :following, through: :followed_user_followers, source: :user
   
@@ -66,12 +68,7 @@ class User < ActiveRecord::Base
   
   belongs_to :location
   
-  has_attached_file :avatar, styles: { fluid: "300x", medium: "300x300#", thumb: "100x100#" }
-  
-  
-  
-  ## Validation
-  validates_attachment_content_type :avatar, :content_type => /\Aimage\/.*\Z/
+  has_one :avatar, class_name: :Image, as: :owner
   
   
   
@@ -113,11 +110,11 @@ class User < ActiveRecord::Base
   
   
   ## Override roles setter
-  def self.valid_roles
+  def self.roles_whitelist
     ['entrepreneur', 'freelancer', 'instructor', 'mentor', 'student', 'other']
   end
   def roles=(roles)
-    names  = User.valid_roles & roles.map(&:downcase).map!(&:strip)
+    names  = User.roles_whitelist & roles.map(&:downcase).map!(&:strip)
     @roles = Role.where(name: names)
   end
   
