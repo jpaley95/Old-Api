@@ -1,26 +1,29 @@
 class UsersController < ApplicationController
-  # Filters
+  ## Filters
   before_action :authenticate_user_from_token!, except: [:create]
   
+  
+  
+  ## Responding
   respond_to :html, :json
   
   
   
-  # GET /users
+  ## GET /users
   def index
     @users = User.all
     render json: @users
   end
   
   
-  # GET /users/:id
+  ## GET /users/:id
   def show
     @user = User.find params[:id]
     render json: @user
   end
   
   
-  # POST /users
+  ## POST /users
   def create
     @user = User.new user_params
     @user.save!
@@ -28,7 +31,7 @@ class UsersController < ApplicationController
   end
   
   
-  # PATCH/PUT /users/:id
+  ## PATCH/PUT /users/:id
   def update
     @user = User.find params[:id]
     @user.update! user_params
@@ -36,7 +39,7 @@ class UsersController < ApplicationController
   end
   
   
-  # DELETE /users/:id
+  ## DELETE /users/:id
   def destroy
     @user = User.find params[:id]
     @user.destroy!
@@ -45,17 +48,30 @@ class UsersController < ApplicationController
   
   
   
-  
   private
-    # Parameter whitelists
+    ## Parameter whitelists
     def user_params
+      if current_user.present? && user.present? && current_user != user
+        other_user_params
+      else
+        current_user_params
+      end
+    end
+    
+    def current_user_params
       params.require(:user).permit([
+        :username, :email, :password,
         :first_name, :last_name,
-        :birthday, :gender,
-        :overview, :headline, :ask_about, :looking_for,
-        :website, :facebook, :twitter, :linkedin,
-        :privacy,
-        :email, :password, :username
+        :overview, :biography, :headline, :ask_about,
+        :website, :facebook, :twitter, :linkedin, :github,
+        :birthday,
+        :avatar, :location,
+        :skills, :interests, :roles,
+        :gender, :looking_for
       ])
+    end
+    
+    def other_user_params
+      params.require(:user).permit([:followed])
     end
 end

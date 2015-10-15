@@ -100,11 +100,11 @@ class User < ActiveRecord::Base
   
   
   ## Override name setter to titleize name
-  def first_name=(s)
-    write_attribute(:first_name, s.to_s.strip.titleize)
+  def first_name=(first)
+    @first_name = first.to_s.strip.titleize
   end
-  def last_name=(s)
-    write_attribute(:last_name,  s.to_s.strip.titleize)
+  def last_name=(last)
+    @last_name = last.to_s.strip.titleize
   end
   
   
@@ -114,17 +114,21 @@ class User < ActiveRecord::Base
     ['entrepreneur', 'freelancer', 'instructor', 'mentor', 'student', 'other']
   end
   def roles=(roles)
-    names  = User.roles_whitelist & roles.map(&:downcase).map!(&:strip)
-    @roles = Role.where(name: names)
+    if roles.respond_to?(:map)
+      names = User.roles_whitelist & roles.map(&:downcase).map!(&:strip)
+      @roles = Role.where(name: names)
+    end
   end
   
   
   
   ## Override skills and interests setters
   def skills=(skills)
+    skills ||= []
     @skills = Tag.construct(skills)
   end
   def interests=(interests)
+    interests ||= []
     @interests = Tag.construct(interests)
   end
   

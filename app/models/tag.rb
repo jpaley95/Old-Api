@@ -36,8 +36,10 @@ class Tag < ActiveRecord::Base
   #    2. Checks the database for the tag; if the tag does not exist,
   #         initializes a new Tag object
   def self.construct(tags)
-    tags.map do |tag|
-      Tag.where(name: tag.gsub(/\s+/, '').downcase).first_or_initialize
+    if tags.respond_to?(:map)
+      tags.map do |tag|
+        Tag.where(name: tag.gsub(/\s+/, '').downcase).first_or_initialize
+      end
     end
   end
 end
