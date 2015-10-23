@@ -5,9 +5,11 @@ class Tag < ActiveRecord::Base
   # t.datetime "updated_at", null: false
   
   
+  
   ## Relationships
   has_and_belongs_to_many :skilled,    class_name: :User, join_table: :skills
   has_and_belongs_to_many :interested, class_name: :User, join_table: :interests
+  
   
   
   ## Validation
@@ -15,10 +17,12 @@ class Tag < ActiveRecord::Base
   validate  :check_tag_format
   
   
+  
   ## Validation routine to check if the tag is formatted correctly
   def check_tag_format
     errors.add(:name, 'is not a valid tag') unless name =~ Tag.validation_regex
   end
+  
   
   
   ## Hashtag-matching regular expressions
@@ -30,16 +34,27 @@ class Tag < ActiveRecord::Base
   end
   
   
-  ## Tag constructing function
-  #  Takes an array of strings and produces an array of Tags
-  #    1. Removes all whitespace and downcases all alphabetic characters
-  #    2. Checks the database for the tag; if the tag does not exist,
-  #         initializes a new Tag object
-  def self.construct(tags)
-    if tags.respond_to?(:map)
-      tags.map do |tag|
+  
+  ## Factory method
+  def self.construct(data)
+    # Non-enumerable
+    if !data.is_a?(Enumerable)
+      Tag.construct [data]
+    
+    # Enumerable of Tags
+    elsif data.all? { |i| i.is_a?(Tag) }
+      data
+    
+    # Enumerable of Strings
+    # TODO: Fix n+1 query problem
+    elsif data.all? { |i| i.is_a?(String) }
+      data.map do |tag|
         Tag.where(name: tag.gsub(/\s+/, '').downcase).first_or_initialize
       end
+    
+    # Enumerable of unknowns
+    else
+      []
     end
   end
 end

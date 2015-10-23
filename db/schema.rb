@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151005193635) do
+ActiveRecord::Schema.define(version: 20151016171359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -520,6 +520,15 @@ ActiveRecord::Schema.define(version: 20151005193635) do
   add_index "threads", ["type"], name: "index_threads_on_type", using: :btree
   add_index "threads", ["user_id"], name: "index_threads_on_user_id", using: :btree
 
+  create_table "user_contact_privacies", force: :cascade do |t|
+    t.integer  "user_id",    null: false
+    t.integer  "privacy_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "user_contact_privacies", ["user_id", "privacy_id"], name: "index_user_contact_privacies_on_user_id_and_privacy_id", unique: true, using: :btree
+
   create_table "user_followers", force: :cascade do |t|
     t.integer  "follower_id", null: false
     t.integer  "followed_id", null: false
@@ -555,7 +564,6 @@ ActiveRecord::Schema.define(version: 20151005193635) do
     t.string   "twitter"
     t.string   "linkedin"
     t.string   "github"
-    t.integer  "privacy"
     t.boolean  "is_superuser",           default: false, null: false
     t.integer  "location_id"
     t.string   "email",                                  null: false

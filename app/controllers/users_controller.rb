@@ -1,41 +1,41 @@
 class UsersController < ApplicationController
-  ## Filters
+  ## Filters and actions
   before_action :authenticate_user_from_token!, except: [:create]
-  
-  
-  
-  ## Responding
-  respond_to :html, :json
   
   
   
   ## GET /users
   def index
     @users = User.all
-    render json: @users
+    render json: @users, context: current_user
   end
   
   
   ## GET /users/:id
   def show
     @user = User.find params[:id]
-    render json: @user
+    render json: @user, context: current_user
   end
   
   
   ## POST /users
   def create
-    @user = User.new user_params
-    @user.save!
-    render json: @user, status: :created
+    @user = User.new params_for(:new_user)
+    #@user.save!
+    render json: @user, status: 555 #:created
+    #render json: JSON.pretty_generate(params_for(:new_user)), status: 555
   end
   
   
   ## PATCH/PUT /users/:id
   def update
     @user = User.find params[:id]
-    @user.update! user_params
-    render json: @user
+    if @user == current_user
+      @user.update! params_for(:current_user)
+    else
+      @user.update! params_for(:another_user)
+    end
+    render json: @user, context: current_user
   end
   
   
@@ -43,35 +43,59 @@ class UsersController < ApplicationController
   def destroy
     @user = User.find params[:id]
     @user.destroy!
-    render json: @user
+    render json: @user, context: current_user
   end
   
   
   
   private
-    ## Parameter whitelists
-    def user_params
-      if current_user.present? && user.present? && current_user != user
-        other_user_params
-      else
-        current_user_params
+    ## Method to create a strong parameter hash for saving a user record
+    def params_for(situation)
+      case situation
+        when :new_user
+          params.require(:user).permit(
+            :username, :email, :password,
+            :first_name, :last_name,
+            :overview, :biography, :headline, :ask_about,
+            :website, :facebook, :twitter, :linkedin, :github,
+            :birthday, :gender, :looking_for,
+            roles: [],
+            skills: [],
+            interests: [],
+            privacy: { contact: [] },
+            location: [
+              :description,
+              :street,
+              :city,
+              :state,
+              :zip,
+              :country,
+              :latitude,
+              :longitude
+          ])
+        when :current_user
+          params.require(:user).permit(
+            :username,
+            :first_name, :last_name,
+            :overview, :biography, :headline, :ask_about,
+            :website, :facebook, :twitter, :linkedin, :github,
+            :birthday, :gender, :looking_for,
+            roles: [],
+            skills: [],
+            interests: [],
+            privacy: { contact: [] },
+            location: [
+              :description,
+              :street,
+              :city,
+              :state,
+              :zip,
+              :country,
+              :latitude,
+              :longitude
+          ])
+        when :another_user
+          params.require(:user).permit([:followed])
       end
-    end
-    
-    def current_user_params
-      params.require(:user).permit([
-        :username, :email, :password,
-        :first_name, :last_name,
-        :overview, :biography, :headline, :ask_about,
-        :website, :facebook, :twitter, :linkedin, :github,
-        :birthday,
-        :avatar, :location,
-        :skills, :interests, :roles,
-        :gender, :looking_for
-      ])
-    end
-    
-    def other_user_params
-      params.require(:user).permit([:followed])
     end
 end

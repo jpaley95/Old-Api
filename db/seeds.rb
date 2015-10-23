@@ -37,6 +37,7 @@ Privacy.create! [
   { name: 'public'      },
   { name: 'communities' },
   { name: 'connections' },
+  { name: 'teams'       },
   { name: 'private'     }
 ]
 

@@ -25,9 +25,6 @@ class CreateUsers < ActiveRecord::Migration
       t.string :linkedin
       t.string :github
       
-      # Privacy settings
-      t.integer :privacy
-      
       # Flags
       t.boolean :is_superuser, null: false, default: false
       

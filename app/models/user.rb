@@ -16,7 +16,6 @@ class User < ActiveRecord::Base
   # t.string   "twitter"
   # t.string   "linkedin"
   # t.string   "github"
-  # t.integer  "privacy"
   # t.boolean  "is_superuser",           default: false, null: false
   # t.integer  "location_id"
   # t.string   "email",                                  null: false
@@ -66,7 +65,9 @@ class User < ActiveRecord::Base
   has_many :follower_user_followers, class_name: :UserFollower, foreign_key: :follower_id
   has_many :followers, through: :follower_user_followers, source: :user
   
-  belongs_to :location
+  belongs_to :location, autosave: true, dependent: :destroy
+  
+  has_and_belongs_to_many :contact_privacies, class_name: :Privacy, join_table: :user_contact_privacies
   
   has_one :avatar, class_name: :Image, as: :owner
   
@@ -101,35 +102,51 @@ class User < ActiveRecord::Base
   
   ## Override name setter to titleize name
   def first_name=(first)
-    @first_name = first.to_s.strip.titleize
+    super(first.to_s.strip.titleize)
   end
   def last_name=(last)
-    @last_name = last.to_s.strip.titleize
+    super(last.to_s.strip.titleize)
   end
   
   
   
-  ## Override roles setter
-  def self.roles_whitelist
-    ['entrepreneur', 'freelancer', 'instructor', 'mentor', 'student', 'other']
+  ## Provide a method to set all user privacies from a hash
+  def privacy=(hash)
+    return if !hash.is_a?(Hash)
+    self.contact_privacies = Privacy.construct(hash[:contact])
   end
+  
+  
+  
+  ## Intercept the roles/skills/interests setters to call cach model's
+  ##   construct() factory method
   def roles=(roles)
-    if roles.respond_to?(:map)
-      names = User.roles_whitelist & roles.map(&:downcase).map!(&:strip)
-      @roles = Role.where(name: names)
-    end
+    super(Role.construct roles)
   end
-  
-  
-  
-  ## Override skills and interests setters
   def skills=(skills)
-    skills ||= []
-    @skills = Tag.construct(skills)
+    super(Tag.construct skills)
   end
   def interests=(interests)
-    interests ||= []
-    @interests = Tag.construct(interests)
+    super(Tag.construct interests)
+  end
+  
+  
+  
+  ## Provide a method to set the attributes of the location association
+  def location=(data)
+    if self.location.present? && !data.is_a?(Hash)
+      self.location.destroy
+    end
+    
+    if data.is_a?(Hash)
+      if self.location.present?
+        self.location.attributes = data
+      else
+        super(Location.new data)
+      end
+    else
+      super(data)
+    end
   end
   
   
