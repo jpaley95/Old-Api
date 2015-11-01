@@ -54,7 +54,10 @@ class User < ActiveRecord::Base
   has_many :experiences
   
   has_many :team_members
+  has_many :teams, through: :team_members
+  
   has_many :community_members
+  has_many :communities, through: :community_members
   
   has_many :team_followers
   has_many :teams_followed, through: :team_followers, source: :team
@@ -147,6 +150,20 @@ class User < ActiveRecord::Base
     else
       super(data)
     end
+  end
+  
+  
+  
+  ## Method to grab all users that belong to a common community
+  def teammates
+    User.joins(:community_members).where(community: communities)
+  end
+  
+  
+  
+  ## Method to grab all users that belong to a common team
+  def neighbors
+    User.joins(:team_members).where(team_members: {team: teams})
   end
   
   

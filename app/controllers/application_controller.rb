@@ -13,8 +13,8 @@ class ApplicationController < ActionController::Base
   
   
   ## Always check for provided token authentication
-  before_filter :authenticate_user_from_token!
-  def authenticate_user_from_token!
+  before_filter :authenticate_user_from_token
+  def authenticate_user_from_token
     authenticate_with_http_token do |token, options|
       user_email = options[:email].presence
       user = user_email && User.find_by_email(user_email)
@@ -24,4 +24,14 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  
+  
+  
+  ## Filter function to ensure the user is authenticated
+  def authenticate_user!
+    if current_user.blank?
+      head status: :unauthorized
+      return false
+    end
+  end
 end

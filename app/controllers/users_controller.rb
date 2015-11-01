@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   ## Filters and actions
-  before_action :authenticate_user_from_token!, except: [:create]
+  before_action :authenticate_user!, except: [:create]
   
   
   
@@ -21,29 +21,34 @@ class UsersController < ApplicationController
   ## POST /users
   def create
     @user = User.new params_for(:new_user)
-    #@user.save!
-    render json: @user, status: 555 #:created
-    #render json: JSON.pretty_generate(params_for(:new_user)), status: 555
+    if @user.save
+      render json: @user, context: current_user, status: :created
+    else
+      render json: { errors: @user.errors }, status: :unprocessable_entity
+    end
   end
   
   
   ## PATCH/PUT /users/:id
   def update
     @user = User.find params[:id]
-    if @user == current_user
-      @user.update! params_for(:current_user)
+    user_type = (@user == current_user) ? :current_user : :another_user
+    if @user.update(params_for user_type)
+      render json: @user, context: current_user
     else
-      @user.update! params_for(:another_user)
+      render json: { errors: @user.errors }, status: :unprocessable_entity
     end
-    render json: @user, context: current_user
   end
   
   
   ## DELETE /users/:id
   def destroy
     @user = User.find params[:id]
-    @user.destroy!
-    render json: @user, context: current_user
+    if @user.destroy
+      render json: @user, context: current_user
+    else
+      render json: { errors: @user.errors }, status: :unprocessable_entity
+    end
   end
   
   

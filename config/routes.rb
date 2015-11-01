@@ -14,6 +14,11 @@ Rails.application.routes.draw do
   # root to: 'home#index'
   
   
+  ## Usernames, Emails
+  get 'usernames/:username' => 'usernames#show'
+  get 'emails/:email'       => 'emails#show'
+  
+  
   ## User, UserFollower, Education, Experience, School
   resources :schools, only: [:index, :create, :show, :update, :destroy]
   resources :educations, only: [:index, :create, :show, :update, :destroy]

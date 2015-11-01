@@ -14,6 +14,7 @@ class UserSerializer < ActiveModel::Serializer
   has_many :roles
   has_many :skills
   has_many :interests
+  has_one  :location, serializer: LocationSerializer
   
   
   ## Relationship serializers
@@ -41,5 +42,19 @@ class UserSerializer < ActiveModel::Serializer
   
   def online_at
     object.last_sign_in_at
+  end
+  
+  
+  ## Filter serialized hash based on permissions
+  def filter(keys)
+    privacies = object.contact_privacies.map(&:name)
+    unless object === context                                                      ||
+           privacies.include?('public')                                            ||
+           privacies.include?('communities') && object.neighbors.include?(context) ||
+           privacies.include?('teams')       && object.teammates.include?(context)
+      keys.delete(:email)
+      keys.delete(:location)
+    end
+    keys
   end
 end
