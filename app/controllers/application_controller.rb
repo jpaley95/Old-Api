@@ -11,6 +11,13 @@ class ApplicationController < ActionController::Base
   
   
   
+  ## Catch ActiveRecord::RecordNotFound exception
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    render json: exception, status: :not_found
+  end
+  
+  
+  
   
   ## Always check for provided token authentication
   before_filter :authenticate_user_from_token

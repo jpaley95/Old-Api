@@ -175,4 +175,40 @@ class Community < ActiveRecord::Base
       super(data)
     end
   end
+  
+  
+  
+  ## Who has permission to edit the community?
+  # Usage: community.can?(user, modify: :children)
+  def can?(user, hash)
+    case hash[:modify]
+      when :profile
+        permission = self.profile_permission.name
+      when :members
+        permission = self.members_permission.name
+      when :children
+        permission = self.children_permission.name
+      when :statistics
+        permission = self.statistics_permission.name
+      when :posts
+        permission = self.posts_permission.name
+      when :listings
+        permission = self.listings_permission.name
+      when :resources
+        permission = self.resources_permission.name
+      when :events
+        permission = self.events_permission.name
+    end
+    
+    role_of(user) === 'owner' ||
+    role_of(user) === 'administrator' && ['administrators', 'members'].include?(permission) ||
+    role_of(user) === 'member'        && [                  'members'].include?(permission)
+  end
+  
+  
+  
+  ## Gets the role of a specific user
+  def role_of(user)
+    CommunityMember.get_role(community: self, user: user)
+  end
 end

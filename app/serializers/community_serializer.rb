@@ -43,12 +43,14 @@ class CommunitySerializer < ActiveModel::Serializer
   
   ## Filter serialized hash based on privacy
   def filter(keys)
-    if object.events_privacy.name === 'private' && CommunityMember.get_role(community: object, user: context).blank?
-      keys.delete(:events)
-    end
-    
-    if object.resources_privacy.name === 'private' && CommunityMember.get_role(community: object, user: context).blank?
-      keys.delete(:resources)
+    if object.role_of(context) === 'none'
+      if object.events_privacy.name === 'private'
+        keys.delete(:events)
+      end
+      
+      if object.resources_privacy.name === 'private'
+        keys.delete(:resources)
+      end
     end
     
     keys

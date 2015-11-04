@@ -21,7 +21,9 @@ class CommunitiesController < ApplicationController
   ## POST /communities
   def create
     @community = Community.new(strong_params_for :new_community)
-    if @community.save
+    if @community.parent.blank? || !@community.parent.can?(current_user, modify: :children)
+      render nothing: true, status: :unprocessable_entity
+    elsif @community.save
       render json: @community, context: current_user, status: :created
     else
       render json: { errors: @community.errors }, status: :unprocessable_entity
@@ -32,7 +34,9 @@ class CommunitiesController < ApplicationController
   ## PATCH/PUT /communities/:id
   def update
     @community = Community.find params[:id]
-    if @community.update(strong_params_for :existing_community)
+    if !@community.can?(current_user, modify: :profile)
+      render nothing: true, status: :unprocessable_entity
+    elsif @community.update(strong_params_for :existing_community)
       render json: @community, context: current_user
     else
       render json: { errors: @community.errors }, status: :unprocessable_entity
@@ -43,7 +47,9 @@ class CommunitiesController < ApplicationController
   ## DELETE /communities/:id
   def destroy
     @community = Community.find params[:id]
-    if @community.destroy
+    if @community.role_of(current_user) !== 'owner'
+      render nothing: true, status: :unprocessable_entity
+    elsif @community.destroy
       render json: @community, context: current_user
     else
       render json: { errors: @community.errors }, status: :unprocessable_entity
@@ -53,96 +59,58 @@ class CommunitiesController < ApplicationController
   
   
   private
-    ## Method to create a strong parameter hash for saving a community record
-    def strong_params_for(situation)
-      case situation
-        when :new_community
-          params.require(:community).permit(
-            :username, :name,
-            :parent_id,
-            :headline, :description, :video,
-            :policy, :signup_mode, :category,
-            :website, :facebook, :twitter, :linkedin,
-            :founded_at,
-            privacy: [
-              :events,
-              :resources
-            ],
-            permission: [
-              :profile,
-              :members,
-              :children,
-              :statistics,
-              :posts,
-              :listings,
-              :resources,
-              :events
-            ],
-            location: [
-              :description,
-              :street,
-              :city,
-              :state,
-              :zip,
-              :country,
-              :latitude,
-              :longitude
-          ])
-        when :existing_community
-          params.require(:community).permit(
-            :username, :name,
-            :headline, :description, :video,
-            :policy, :signup_mode, :category,
-            :website, :facebook, :twitter, :linkedin,
-            :founded_at,
-            privacy: [
-              :events,
-              :resources
-            ],
-            permission: [
-              :profile,
-              :members,
-              :children,
-              :statistics,
-              :posts,
-              :listings,
-              :resources,
-              :events
-            ],
-            location: [
-              :description,
-              :street,
-              :city,
-              :state,
-              :zip,
-              :country,
-              :latitude,
-              :longitude
-          ])
-      end
+  
+  
+  
+  ## Method to create a strong parameter hash for saving a community record
+  def strong_params_for(situation)
+    case situation
+      when :new_community
+        params.require(:community).permit(
+          :username, :name,
+          :parent_id,
+          :headline, :description, :video,
+          :policy, :signup_mode, :category,
+          :website, :facebook, :twitter, :linkedin,
+          :founded_at,
+          privacy: [
+            :events,
+            :resources
+          ],
+          permission: [
+            :profile,
+            :members,
+            :children,
+            :statistics,
+            :posts,
+            :listings,
+            :resources,
+            :events
+          ],
+          location: [
+            :description,
+            :street,
+            :city,
+            :state,
+            :zip,
+            :country,
+            :latitude,
+            :longitude
+        ])
+      when :existing_community
+        p = strong_params_for(:new_community)
+        p.delete(:parent_id)
+        p
     end
-    
-    
-    ## Method to filter parameters based on permissions
-    def filter_params(params)
-      params = params.dup
-      
-      my_role            = CommunityMember.get_role(community: @community, user: current_user)
-      profile_permission = @community.profile_permission.name
-      
-      if my_role === 'administrator' && ['owners'                  ].include?(profile_permission) ||
-         my_role === 'member'        && ['owners', 'administrators'].include?(profile_permission) ||
-         my_role === 'none'
-        params.each_key do |key|
-          params.delete(key)
-        end
-      end
-      
-      if my_role !== 'owner'
-        params.delete(:privacy)
-        params.delete(:permission)
-      end
-      
-      params
+  end
+  
+  
+  ## Method to filter parameters based on permissions
+  def filter_params(params)
+    if @community.role_of(current_user) !== 'owner'
+      params.delete(:privacy)
+      params.delete(:permission)
     end
+    params
+  end
 end
