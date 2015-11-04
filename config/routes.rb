@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   
   ## Usernames, Emails
   get 'usernames/:username' => 'usernames#show'
-  get 'emails/:email'       => 'emails#show'
+  get 'emails/:email'       => 'emails#show',    email: /[^\/]+/
   
   
   ## User, UserFollower, Education, Experience, School
