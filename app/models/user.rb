@@ -121,7 +121,7 @@ class User < ActiveRecord::Base
   
   
   
-  ## Intercept the roles/skills/interests setters to call cach model's
+  ## Intercept the roles/skills/interests setters to call each model's
   ##   construct() factory method
   def roles=(roles)
     super(Role.construct roles)
@@ -175,14 +175,12 @@ class User < ActiveRecord::Base
          :lockable, :confirmable
   
   
-  
   ## Method to create an authentication token if one does not already exist
   def ensure_authentication_token
     if authentication_token.blank?
       self.authentication_token = generate_authentication_token
     end
   end
-  
   
   
   ## Method to generate a unique authentication token

@@ -45,7 +45,7 @@ class UserSerializer < ActiveModel::Serializer
   end
   
   
-  ## Filter serialized hash based on permissions
+  ## Filter serialized hash based on privacy
   def filter(keys)
     privacies = object.contact_privacies.map(&:name)
     unless object === context                                                      ||

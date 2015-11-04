@@ -20,7 +20,7 @@ class UsersController < ApplicationController
   
   ## POST /users
   def create
-    @user = User.new params_for(:new_user)
+    @user = User.new(strong_params_for :new_user)
     if @user.save
       render json: @user, context: current_user, status: :created
     else
@@ -33,7 +33,7 @@ class UsersController < ApplicationController
   def update
     @user = User.find params[:id]
     user_type = (@user == current_user) ? :current_user : :another_user
-    if @user.update(params_for user_type)
+    if @user.update(strong_params_for user_type)
       render json: @user, context: current_user
     else
       render json: { errors: @user.errors }, status: :unprocessable_entity
@@ -55,7 +55,7 @@ class UsersController < ApplicationController
   
   private
     ## Method to create a strong parameter hash for saving a user record
-    def params_for(situation)
+    def strong_params_for(situation)
       case situation
         when :new_user
           params.require(:user).permit(

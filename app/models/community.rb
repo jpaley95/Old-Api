@@ -46,7 +46,7 @@ class Community < ActiveRecord::Base
   
   has_and_belongs_to_many :teams, join_table: :community_teams
   
-  belongs_to :location
+  belongs_to :location, autosave: true, dependent: :destroy
   
   belongs_to :profile_permission,    class_name: :Permission
   belongs_to :members_permission,    class_name: :Permission
@@ -66,7 +66,7 @@ class Community < ActiveRecord::Base
   
   
   ## Validation
-  validates :name, presence: true/
+  validates :name, presence: true
   
   
   
@@ -77,6 +77,11 @@ class Community < ActiveRecord::Base
     :organization,
     :other
   ]
+  
+  
+  
+  ## Alias
+  alias_attribute :signup_mode, :domains
   
   
   
@@ -92,32 +97,6 @@ class Community < ActiveRecord::Base
   end
   def self.archived
     self.where.not archived_at:  nil
-  end
-  
-  
-  
-  ## Permission
-  def permission
-    {
-      profile:    profile_permission.name,
-      members:    members_permission.name,
-      children:   children_permission.name,
-      statistics: statistics_permission.name,
-      posts:      posts_permission.name,
-      listings:   listings_permission.name,
-      resources:  resources_permission.name,
-      events:     events_permission.name
-    }
-  end
-  
-  
-  
-  ## Privacy
-  def privacy
-    {
-      events:    events_privacy.name,
-      resources: resources_privacy.name
-    }
   end
   
   
@@ -152,5 +131,48 @@ class Community < ActiveRecord::Base
   end
   def is_descendent_of?(community)
     community.is_ancestor_of?(self)
+  end
+  
+  
+  
+  ## Provide a method to set all community privacies from a hash
+  def privacy=(hash)
+    return if !hash.is_a?(Hash)
+    self.events_privacy    = Privacy.construct(hash[:events]).first
+    self.resources_privacy = Privacy.construct(hash[:resources]).first
+  end
+  
+  
+  
+  ## Provide a method to set all community permissions from a hash
+  def permissions=(hash)
+    return if !hash.is_a?(Hash)
+    self.profile_permission    = Permission.construct(hash[:profile]).first
+    self.members_permission    = Permission.construct(hash[:members]).first
+    self.children_permission   = Permission.construct(hash[:children]).first
+    self.statistics_permission = Permission.construct(hash[:statistics]).first
+    self.posts_permission      = Permission.construct(hash[:posts]).first
+    self.listings_permission   = Permission.construct(hash[:listings]).first
+    self.resources_permission  = Permission.construct(hash[:resources]).first
+    self.events_permission     = Permission.construct(hash[:events]).first
+  end
+  
+  
+  
+  ## Provide a method to set the attributes of the location association
+  def location=(data)
+    if self.location.present? && !data.is_a?(Hash)
+      self.location.destroy
+    end
+    
+    if data.is_a?(Hash)
+      if self.location.present?
+        self.location.attributes = data
+      else
+        super(Location.new data)
+      end
+    else
+      super(data)
+    end
   end
 end
