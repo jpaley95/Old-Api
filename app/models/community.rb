@@ -178,26 +178,38 @@ class Community < ActiveRecord::Base
   
   
   
-  ## Who has permission to edit the community?
-  # Usage: community.can?(user, modify: :children)
-  def can?(user, hash)
-    case hash[:modify]
-      when :profile
-        permission = self.profile_permission.name
-      when :members
-        permission = self.members_permission.name
-      when :children
-        permission = self.children_permission.name
-      when :statistics
-        permission = self.statistics_permission.name
-      when :posts
-        permission = self.posts_permission.name
-      when :listings
-        permission = self.listings_permission.name
-      when :resources
-        permission = self.resources_permission.name
-      when :events
-        permission = self.events_permission.name
+  ## Access Control
+  # Checks if a community can be read by a certain user
+  def can_be_read_by?(user, type_of_data)
+    case type_of_data
+    when :events
+      events_privacy.name === 'public' || role_of(user) !== 'none'
+    when :resources
+      resources_privacy.name === 'public' || role_of(user) !== 'none'
+    else
+      true
+    end
+  end
+  
+  # Checks if a community can be written by a certain user
+  def can_be_written_by?(user, type_of_data)
+    permission = case type_of_data
+    when :profile
+      profile_permission.name
+    when :members
+      members_permission.name
+    when :children
+      children_permission.name
+    when :statistics
+      statistics_permission.name
+    when :posts
+      posts_permission.name
+    when :listings
+      listings_permission.name
+    when :resources
+      resources_permission.name
+    when :events
+      events_permission.name
     end
     
     role_of(user) === 'owner' ||
@@ -205,10 +217,9 @@ class Community < ActiveRecord::Base
     role_of(user) === 'member'        && [                  'members'].include?(permission)
   end
   
-  
-  
-  ## Gets the role of a specific user
+  # Gets a user's role in the community
   def role_of(user)
-    CommunityMember.get_role(community: self, user: user)
+    record = CommunityMember.where(community: self, user: user).first
+    record.present? ? record.role.name : 'none'
   end
 end

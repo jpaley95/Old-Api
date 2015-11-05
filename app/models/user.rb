@@ -156,7 +156,7 @@ class User < ActiveRecord::Base
   
   ## Method to grab all users that belong to a common community
   def teammates
-    User.joins(:community_members).where(community: communities)
+    User.joins(:community_members).where(community_members: {community: communities})
   end
   
   
@@ -164,6 +164,42 @@ class User < ActiveRecord::Base
   ## Method to grab all users that belong to a common team
   def neighbors
     User.joins(:team_members).where(team_members: {team: teams})
+  end
+  
+  
+  
+  ## Access Control
+  # Checks if a user can read a certain record's data
+  # Usage: user.can_read?(community, :profile)
+  def can_read?(record, type_of_data)
+    record.can_be_read_by?(self, type_of_data)
+  end
+  
+  # Checks if a user can write a certain record's data
+  # Usage: user.can_write?(community, :profile)
+  def can_write?(record, type_of_data)
+    record.can_be_written_by?(self, type_of_data)
+  end
+  
+  # Gets the user's role in a particular record (team/community)
+  # Usage: user.role_in(community)
+  def role_in(record)
+    record.role_of(self)
+  end
+  
+  
+  
+  ## Other side of access control (checking if a user can read another user)
+  def can_be_read_by?(user, type_of_data)
+    case type_of_data
+    when :contact
+      privacies = contact_privacies.map(&:name)
+      self === user || privacies.include?('public')                 ||
+      privacies.include?('communities') && neighbors.include?(user) ||
+      privacies.include?('teams')       && teammates.include?(user)
+    else
+      true
+    end
   end
   
   

@@ -47,14 +47,11 @@ class UserSerializer < ActiveModel::Serializer
   
   ## Filter serialized hash based on privacy
   def filter(keys)
-    privacies = object.contact_privacies.map(&:name)
-    unless object === context                                                      ||
-           privacies.include?('public')                                            ||
-           privacies.include?('communities') && object.neighbors.include?(context) ||
-           privacies.include?('teams')       && object.teammates.include?(context)
+    if !context.can_read?(object, :contact)
       keys.delete(:email)
       keys.delete(:location)
     end
+    
     keys
   end
 end

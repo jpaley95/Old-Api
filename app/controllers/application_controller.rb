@@ -11,9 +11,29 @@ class ApplicationController < ActionController::Base
   
   
   
-  ## Catch ActiveRecord::RecordNotFound exception
+  
+  ## Catch Exceptions
+  # save!, create!, update!
+  rescue_from ActiveRecord::RecordInvalid do |exception|
+    render json: { errors: exception.record.errors }, status: :unprocessable_entity
+  end
+  
+  # destroy!
+  rescue_from ActiveRecord::RecordNotDestroyed  do |exception|
+    render json: { errors: exception.record.errors }, status: :unprocessable_entity
+  end
+  
+  # find, first!, last!
   rescue_from ActiveRecord::RecordNotFound do |exception|
     render json: exception, status: :not_found
+  end
+  
+  rescue_from CustomException::UnprocessableEntity do |exception|
+    render nothing: true, status: :unprocessable_entity
+  end
+  
+  rescue_from CustomException::Forbidden do |exception|
+    render nothing: true, status: :forbidden
   end
   
   

@@ -29,11 +29,4 @@ class CommunityMember < ActiveRecord::Base
       errors.add(:role, 'must be one of the following: "' + self.role_whitelist.join('", "') + '"')
     end
   end
-  
-  
-  ## Method to get a particular user's role in a particular community
-  def self.get_role(hash)
-    record = self.where(user: hash.user, community: hash.community).first
-    record.present? ? record.role.name : 'none'
-  end
 end

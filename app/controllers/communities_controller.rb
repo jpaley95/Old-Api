@@ -7,7 +7,7 @@ class CommunitiesController < ApplicationController
   ## GET /communities
   def index
     @communities = Community.all
-    render json: @communitys, context: current_user
+    render json: @communities, context: current_user
   end
   
   
@@ -21,12 +21,11 @@ class CommunitiesController < ApplicationController
   ## POST /communities
   def create
     @community = Community.new(strong_params_for :new_community)
-    if @community.parent.blank? || !@community.parent.can?(current_user, modify: :children)
-      render nothing: true, status: :unprocessable_entity
-    elsif @community.save
-      render json: @community, context: current_user, status: :created
+    if @community.parent.blank? || !current_user.can_write?(@community.parent, :children)
+      raise CustomException::Forbidden
     else
-      render json: { errors: @community.errors }, status: :unprocessable_entity
+      @community.save!
+      render json: @community, context: current_user, status: :created
     end
   end
   
@@ -34,12 +33,11 @@ class CommunitiesController < ApplicationController
   ## PATCH/PUT /communities/:id
   def update
     @community = Community.find params[:id]
-    if !@community.can?(current_user, modify: :profile)
-      render nothing: true, status: :unprocessable_entity
-    elsif @community.update(strong_params_for :existing_community)
-      render json: @community, context: current_user
+    if !current_user.can_write?(@community, :profile)
+      raise CustomException::Forbidden
     else
-      render json: { errors: @community.errors }, status: :unprocessable_entity
+      @community.update!(strong_params_for :existing_community)
+      render json: @community, context: current_user
     end
   end
   
@@ -47,12 +45,11 @@ class CommunitiesController < ApplicationController
   ## DELETE /communities/:id
   def destroy
     @community = Community.find params[:id]
-    if @community.role_of(current_user) !== 'owner'
-      render nothing: true, status: :unprocessable_entity
-    elsif @community.destroy
-      render json: @community, context: current_user
+    if current_user.role_in(@community) !== 'owner'
+      raise CustomException::Forbidden
     else
-      render json: { errors: @community.errors }, status: :unprocessable_entity
+      @community.destroy!
+      render json: @community, context: current_user
     end
   end
   
