@@ -36,6 +36,10 @@ class ApplicationController < ActionController::Base
     render nothing: true, status: :forbidden
   end
   
+  rescue_from CustomException::Unauthorized do |exception|
+    render nothing: true, status: :unauthorized
+  end
+  
   
   
   
