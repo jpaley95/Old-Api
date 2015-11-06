@@ -75,24 +75,18 @@ class CommunitiesController < ApplicationController
   
   
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  ## Creates a strong parameter hash for 
+  ## Creates a strong parameter hash for mass assignment
   def strong_params
     params.require(:community).permit(param_whitelist)
   end
   
   
-  def param_whitelist(action = nil)
-    case action || action_name
-    when 'create'
+  
+  ## Prepares a whitelist to pass into the permit() method provided by Rails'
+  ##   strong parameter feature
+  ## Uses @community, action_name, and current_user
+  def param_whitelist
+    whitelist = [
       :username, :name,
       :parent_id,
       :headline, :description, :video,
@@ -123,102 +117,16 @@ class CommunitiesController < ApplicationController
         :latitude,
         :longitude
       ]
-    when 'update'
-      whitelist = param_whitelist('create')
+    ]
+    
+    if action_name === 'update'
       whitelist.delete(:parent_id)
-      unless @community.role_of(current_user) === 'owner'
+      unless current_user.role_in(@community) === 'owner'
         whitelist.delete(:privacy)
         whitelist.delete(:permission)
       end
-      whitelist
-    else
-      []
     end
-  end
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  ## Calls filter_params and strong_params on the parameter hash to construct a
-  ##   safe, strong parameter hash ready for mass assignment
-  def safe_params
-    strong_params(filter_params params)
-  end
-  
-  
-  ## Filters a parameter hash for mass assignment based on:
-  ##   * action_name
-  ##   * current_user
-  ##   * @community (if present)
-  def filter_params(params)
-    params = params.dup
-    case action_name
-    when 'update'
-      if @community.present? && @community.role_of(current_user) !== 'owner'
-        params.delete(:privacy)
-        params.delete(:permission)
-      end
-    end
-    params
-  end
-  
-  
-  
-  ## Creates a strong parameter hash for community mass assignment based on:
-  ##   * action_name
-  ##   * current_user
-  ##   * @community (if present)
-  def strong_params(params)
-    case action_name
-      when :new_community
-        params.require(:community).permit(
-          :username, :name,
-          :parent_id,
-          :headline, :description, :video,
-          :policy, :signup_mode, :category,
-          :website, :facebook, :twitter, :linkedin,
-          :founded_at,
-          privacy: [
-            :events,
-            :resources
-          ],
-          permission: [
-            :profile,
-            :members,
-            :children,
-            :statistics,
-            :posts,
-            :listings,
-            :resources,
-            :events
-          ],
-          location: [
-            :description,
-            :street,
-            :city,
-            :state,
-            :zip,
-            :country,
-            :latitude,
-            :longitude
-        ])
-      when :existing_community
-        p = strong_params_for(:new_community)
-        p.delete(:parent_id)
-        p
-    end
+    
+    whitelist
   end
 end

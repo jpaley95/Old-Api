@@ -3,6 +3,7 @@ class TeamMember < ActiveRecord::Base
   # t.integer  "user_id",    null: false
   # t.integer  "team_id",    null: false
   # t.integer  "role_id",    null: false
+  # t.string   "title"
   # t.datetime "created_at", null: false
   # t.datetime "updated_at", null: false
   
@@ -30,5 +31,11 @@ class TeamMember < ActiveRecord::Base
     unless self.role_whitelist.include? role.name
       errors.add(:role, 'must be one of the following: "' + self.role_whitelist.join('", "') + '"')
     end
+  end
+  
+  
+  ## Intercept role setter
+  def role=(role)
+    super(Role.construct role)
   end
 end

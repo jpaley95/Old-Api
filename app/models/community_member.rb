@@ -29,4 +29,10 @@ class CommunityMember < ActiveRecord::Base
       errors.add(:role, 'must be one of the following: "' + self.role_whitelist.join('", "') + '"')
     end
   end
+  
+  
+  ## Intercept role setter
+  def role=(role)
+    super(Role.construct role)
+  end
 end
