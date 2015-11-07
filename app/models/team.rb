@@ -51,13 +51,19 @@ class Team < ActiveRecord::Base
   
   
   
-  ## Sectors
+  ## Provide a method to get/set all team sectors
   def sectors
     sectors = []
     sectors.push 'commercial' if commercial
     sectors.push 'social'     if social
     sectors.push 'research'   if research
     sectors
+  end
+  def sectors=(arr)
+    return if !arr.is_a?(Array)
+    self.commercial = arr.include?('commercial')
+    self.research   = arr.include?('research')
+    self.social     = arr.include?('social')
   end
   
   
