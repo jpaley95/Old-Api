@@ -51,6 +51,13 @@ class Team < ActiveRecord::Base
   
   
   
+  ## Intercept industries setters and call Tag factory method
+  def industries=(industries)
+    super(Tag.construct industries)
+  end
+  
+  
+  
   ## Provide a method to get/set all team sectors
   def sectors
     sectors = []
