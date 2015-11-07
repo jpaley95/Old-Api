@@ -15,7 +15,7 @@ class Permission < ActiveRecord::Base
     if !data.is_a?(Enumerable)
       Permission.construct [data]
     
-    # Enumerable of Privacies
+    # Enumerable of Permissions
     elsif data.all? { |i| i.is_a?(Permission) }
       data
     

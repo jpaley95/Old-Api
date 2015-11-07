@@ -2,10 +2,11 @@ class CreateEducations < ActiveRecord::Migration
   def change
     create_table :educations do |t|
       # School
-      t.belongs_to :school, index: true, null: false
+      t.belongs_to :school, index: true
+      t.string :school_name
       
       # Degree
-      t.belongs_to :degree, index: true
+      t.belongs_to :degree, index: true, null: false
       
       # Date fields
       t.date :started_at

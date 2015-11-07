@@ -62,23 +62,21 @@ class Team < ActiveRecord::Base
   
   
   
-  ## Permission
-  def permission
-    {
-      listings: listings_permissions.map(&:name),
-      kpis:     kpis_permissions.map(&:name),
-      profile:  profile_permissions.map(&:name),
-      posts:    posts_permissions.map(&:name)
-    }
+  ## Provide a method to set all team privacies from a hash
+  def privacy=(hash)
+    return if !hash.is_a?(Hash)
+    self.kpis_privacies    = Privacy.construct(hash[:kpis])
+    self.contact_privacies = Privacy.construct(hash[:contact])
   end
   
   
   
-  ## Privacy
-  def privacy
-    {
-      kpis:    kpis_privacies.map(&:name),
-      contact: contact_privacies.map(&:name)
-    }
+  ## Provide a method to set all team permissions from a hash
+  def permissions=(hash)
+    return if !hash.is_a?(Hash)
+    self.listings_permissions = Permission.construct(hash[:listings])
+    self.kpis_permissions     = Permission.construct(hash[:kpis])
+    self.profile_permissions  = Permission.construct(hash[:profile])
+    self.posts_permissions    = Permission.construct(hash[:posts])
   end
 end

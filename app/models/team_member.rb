@@ -36,6 +36,6 @@ class TeamMember < ActiveRecord::Base
   
   ## Intercept role setter
   def role=(role)
-    super(Role.construct role)
+    super(Role.construct(role).first)
   end
 end
