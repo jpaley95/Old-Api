@@ -19,4 +19,9 @@ class Kpi < ActiveRecord::Base
   validates :name,         presence: true
   validates :is_completed, presence: true
   validates :team,         presence: true
+  
+  
+  
+  ## Alias
+  alias_attribute :completed, :is_completed
 end

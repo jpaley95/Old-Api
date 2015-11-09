@@ -154,16 +154,23 @@ class User < ActiveRecord::Base
   
   
   
-  ## Method to grab all users that belong to a common community
+  ## Method to grab all users that belong to a common team
   def teammates
+    User.joins(:team_members).where(team_members: {team: teams})
+  end
+  
+  
+  
+  ## Method to grab all users that belong to a common community
+  def neighbors
     User.joins(:community_members).where(community_members: {community: communities})
   end
   
   
   
-  ## Method to grab all users that belong to a common team
-  def neighbors
-    User.joins(:team_members).where(team_members: {team: teams})
+  ## Method to grab all connections
+  def connections
+    followers & following
   end
   
   
@@ -194,7 +201,7 @@ class User < ActiveRecord::Base
     case type_of_data
     when :contact
       privacies = contact_privacies.map(&:name)
-      self === user || privacies.include?('public')                 ||
+      self === user || privacies.include?('public') ||
       privacies.include?('communities') && neighbors.include?(user) ||
       privacies.include?('teams')       && teammates.include?(user)
     else

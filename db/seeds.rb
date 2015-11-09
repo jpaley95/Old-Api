@@ -1,20 +1,22 @@
 ## Seed roles table
 Role.create! [
-  { name: 'entrepreneur'  },
-  { name: 'freelancer'    },
-  { name: 'student'       },
-  { name: 'instructor'    },
-  { name: 'mentor'        },
-  { name: 'other'         },
-  { name: 'owner'         },
-  { name: 'administrator' },
-  { name: 'member'        },
-  { name: 'founder'       },
-  { name: 'leader'        },
-  { name: 'teammate'      },
-  { name: 'intern'        },
-  { name: 'board'         },
-  { name: 'investor'      }
+  { name: 'entrepreneur'  }, # user
+  { name: 'freelancer'    }, # user, team-member
+  { name: 'student'       }, # user
+  { name: 'instructor'    }, # user
+  { name: 'mentor'        }, # user, team-member
+  { name: 'other'         }, # user
+  
+  { name: 'owner'         }, # community-member
+  { name: 'administrator' }, # community-member
+  { name: 'member'        }, # community-member
+  
+  { name: 'founder'       }, # 
+  { name: 'leader'        }, # team-member
+  { name: 'teammate'      }, # team-member
+  { name: 'intern'        }, # team-member
+  { name: 'board'         }, # 
+  { name: 'investor'      }  # 
 ]
 
 

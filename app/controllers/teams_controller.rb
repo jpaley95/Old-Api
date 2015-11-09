@@ -25,8 +25,8 @@ class TeamsController < ApplicationController
     @team.save!
     TeamMember.create!(
       team: @team,
-      user:      current_user,
-      role:      Role.find_by(name: 'founder'))
+      user: current_user,
+      role: Role.find_by(name: 'leader'))
     render json: @team, context: current_user, status: :created
   end
   
@@ -86,26 +86,26 @@ class TeamsController < ApplicationController
   ##   strong parameter feature
   ## Uses @team, action_name, and current_user
   def param_whitelist
-    whitelist = [
-      :username, :name,
-      :parent_id,
-      :headline, :description, :video,
-      :policy, :signup_mode, :category,
-      :website, :facebook, :twitter, :linkedin,
+    [
+      :name,
+      :tagline, :contact, :summary,
+      :website, :facebook, :twitter, :linkedin, :github,
       :founded_at,
+      community_ids: [],
+      sectors: [
+        :commercial,
+        :social,
+        :research
+      ],
       privacy: [
-        :events,
-        :resources
+        contact: [],
+        kpis: []
       ],
       permission: [
-        :profile,
-        :members,
-        :children,
-        :statistics,
-        :posts,
-        :listings,
-        :resources,
-        :events
+         listings: [],
+         profile: [],
+         posts: [],
+         kpis: []
       ],
       location: [
         :description,
@@ -118,15 +118,5 @@ class TeamsController < ApplicationController
         :longitude
       ]
     ]
-    
-    if action_name === 'update'
-      whitelist.delete(:parent_id)
-      unless current_user.role_in(@team) === 'owner'
-        whitelist.delete(:privacy)
-        whitelist.delete(:permission)
-      end
-    end
-    
-    whitelist
   end
 end

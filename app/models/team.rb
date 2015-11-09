@@ -21,6 +21,7 @@ class Team < ActiveRecord::Base
   
   ## Relationships
   has_many :members, class_name: :TeamMember
+  has_many :users, through: :members
   
   has_many :community_teams
   has_many :communities, through: :community_teams
@@ -91,5 +92,47 @@ class Team < ActiveRecord::Base
     self.kpis_permissions     = Permission.construct(hash[:kpis])
     self.profile_permissions  = Permission.construct(hash[:profile])
     self.posts_permissions    = Permission.construct(hash[:posts])
+  end
+  
+  
+  
+  ## Access Control
+  # Checks if a team can be read by a certain user
+  def can_be_read_by?(user, type_of_data)
+    privacies = case type_of_data
+    when :kpis
+      kpis_privacies
+    when :contact
+      contact_privacies
+    else
+      []
+    end
+    
+    privacies.include?('public') ||
+    privacies.include?('communities') && (user.communities & communities).present? ||
+    privacies.include?('connections') && (user.connections & users      ).present? ||
+    privacies.include?('team')        && role_of(user) !== 'none'
+  end
+  
+  # Checks if a team can be written by a certain user
+  def can_be_written_by?(user, type_of_data)
+    case type_of_data
+    when :listings
+      listings_permissions.include?(role_of(user).pluralize)
+    when :kpis
+      kpis_permissions.include?(role_of(user).pluralize)
+    when :profile
+      profile_permissions.include?(role_of(user).pluralize)
+    when :posts
+      posts_permissions.include?(role_of(user).pluralize)
+    else
+      false
+    end
+  end
+  
+  # Gets a user's role in the team
+  def role_of(user)
+    record = TeamMember.where(team: self, user: user).first
+    record.present? ? record.role.name : 'none'
   end
 end

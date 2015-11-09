@@ -39,10 +39,11 @@ class Community < ActiveRecord::Base
   has_many :resources
   has_many :categories, through: :resources
   
-  belongs_to :parent,   class_name: :Community, foreign_key: :community_id
-  has_many   :children, class_name: :Community, foreign_key: :community_id, dependent: :restrict_with_exception
+  belongs_to :parent,   class_name: :Community
+  has_many   :children, class_name: :Community, dependent: :restrict_with_exception
   
-  has_many :members, class_name: :CommunityMember, foreign_key: :community_id
+  has_many :members, class_name: :CommunityMember
+  has_many :users, through: :members
   
   has_and_belongs_to_many :teams, join_table: :community_teams
   
