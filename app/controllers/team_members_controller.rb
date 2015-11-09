@@ -46,11 +46,11 @@ class TeamMembersController < ApplicationController
   def authorize_action!
     case action_name
     when 'update'
-      unless current_user.can_write?(@team, :members)
+      unless current_user.can_write?(@team_member.team, :members)
         raise CustomException::Forbidden
       end
     when 'destroy'
-      unless current_user.can_write?(@team, :members) || current_user === @team_member.user
+      unless current_user.can_write?(@team_member.team, :members) || current_user === @team_member.user
         raise CustomException::Forbidden
       end
     end

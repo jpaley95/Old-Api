@@ -46,7 +46,7 @@ class CommunityMembersController < ApplicationController
   def authorize_action!
     case action_name
     when 'update'
-      unless current_user.can_write?(@community, :members)
+      unless current_user.can_write?(@community_member.community, :members)
         raise CustomException::Forbidden
       end
     when 'destroy'
