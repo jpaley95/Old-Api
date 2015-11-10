@@ -1,15 +1,17 @@
 class MetricChange < ActiveRecord::Base
   # Database Fields
-  # t.text    "comment"
-  # t.integer "old_progress", null: false
-  # t.integer "new_progress", null: false
-  # t.integer "metric_id",    null: false
-  # t.integer "user_id",      null: false
+  # t.text     "comment"
+  # t.integer  "old_progress", null: false
+  # t.integer  "new_progress", null: false
+  # t.integer  "metric_id",    null: false
+  # t.integer  "user_id",      null: false
+  # t.datetime "created_at",   null: false
+  # t.datetime "updated_at",   null: false
   
   
   
   # Relationships
-  belongs_to :metric
+  belongs_to :metric, class_name: :SuccessMetric
   belongs_to :user
   
   

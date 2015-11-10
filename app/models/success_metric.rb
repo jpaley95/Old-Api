@@ -1,14 +1,16 @@
 class SuccessMetric < ActiveRecord::Base
   ## Database Fields
-  # t.text    "description"
-  # t.integer "progress",    default: 0, null: false
-  # t.integer "kpi_id",                  null: false
+  # t.text     "description"
+  # t.integer  "progress",    default: 0, null: false
+  # t.integer  "kpi_id",                  null: false
+  # t.datetime "created_at",              null: false
+  # t.datetime "updated_at",              null: false
   
   
   
   ## Relationships
   belongs_to :kpi
-  has_many :metric_changes
+  has_many :changes, class_name: :MetricChange
   
   
   

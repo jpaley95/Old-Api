@@ -6,6 +6,8 @@ class Kpi < ActiveRecord::Base
   # t.datetime "started_at"
   # t.datetime "finished_at"
   # t.integer  "team_id",                      null: false
+  # t.datetime "created_at",                   null: false
+  # t.datetime "updated_at",                   null: false
   
   
   
