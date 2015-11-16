@@ -88,7 +88,7 @@ class TeamsController < ApplicationController
   def param_whitelist
     [
       :name,
-      :tagline, :contact, :summary,
+      :tagline, :contact, :summary, :stage,
       :website, :facebook, :twitter, :linkedin, :github,
       :founded_at,
       community_ids: [],

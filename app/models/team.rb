@@ -4,6 +4,7 @@ class Team < ActiveRecord::Base
   # t.string   "tagline"
   # t.string   "contact"
   # t.text     "summary"
+  # t.string   "stage"
   # t.string   "website"
   # t.string   "facebook"
   # t.string   "twitter"

@@ -1,11 +1,13 @@
 class CreateCategories < ActiveRecord::Migration
   def change
     create_table :categories do |t|
-      ## Personal information
+      ## Text fields
       t.string :name, null: false
-      t.text :description
+      t.index  :name, unique: true
       
-      # Skip timestamps, since this is not a user-populated model
+      ## Include timestamps, even though this is initially not a user-created
+      ##   category
+      t.timestamps null: false
     end
   end
 end

@@ -8,6 +8,7 @@ class CreateTeams < ActiveRecord::Migration
       t.string :tagline
       t.string :contact
       t.text   :summary
+      t.string :stage
       
       # Social information
       t.string :website

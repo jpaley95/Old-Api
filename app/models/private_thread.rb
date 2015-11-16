@@ -14,7 +14,7 @@ class PrivateThread < Thread
   
   ## Custom validation to ensure a participant exists
   def thread_must_have_two_participants
-    if participants.size != 2
+    if participants.size !== 2
       errors.add(:participants, 'must have two elements')
     end
   end

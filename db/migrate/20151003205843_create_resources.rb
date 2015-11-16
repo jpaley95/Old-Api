@@ -5,14 +5,12 @@ class CreateResources < ActiveRecord::Migration
       t.string :name, null: false
       
       ## Textual information
-      t.string :contact
       t.text :overview
       
       ## Social information
       t.string :website
       t.string :facebook
       t.string :twitter
-      t.string :linkedin
       
       ## Privacy
       t.belongs_to :privacy, null: false

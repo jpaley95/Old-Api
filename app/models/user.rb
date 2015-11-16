@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   # t.text     "awards"
   # t.string   "headline"
   # t.string   "ask_about"
-  # t.integer  "looking_for"
+  # t.integer  "focus"
   # t.string   "website"
   # t.string   "facebook"
   # t.string   "twitter"
@@ -89,7 +89,7 @@ class User < ActiveRecord::Base
     :other,
     :decline
   ]
-  enum looking_for: [
+  enum focus: [
     :cofounder,
     :join_team,
     :create_team,
@@ -178,13 +178,13 @@ class User < ActiveRecord::Base
   ## Access Control
   # Checks if a user can read a certain record's data
   # Usage: user.can_read?(community, :profile)
-  def can_read?(record, type_of_data)
+  def can_read?(record, type_of_data = nil)
     record.can_be_read_by?(self, type_of_data)
   end
   
   # Checks if a user can write a certain record's data
   # Usage: user.can_write?(community, :profile)
-  def can_write?(record, type_of_data)
+  def can_write?(record, type_of_data = nil)
     record.can_be_written_by?(self, type_of_data)
   end
   
@@ -194,10 +194,8 @@ class User < ActiveRecord::Base
     record.role_of(self)
   end
   
-  
-  
-  ## Other side of access control (checking if a user can read another user)
-  def can_be_read_by?(user, type_of_data)
+  # Other side of access control (checking if a user can read another user)
+  def can_be_read_by?(user, type_of_data = nil)
     case type_of_data
     when :contact
       privacies = contact_privacies.map(&:name)
@@ -207,6 +205,11 @@ class User < ActiveRecord::Base
     else
       true
     end
+  end
+  
+  # Other side of access control (checking if a user can write another user)
+  def can_be_written_by?(user, type_of_data = nil)
+    self === user
   end
   
   

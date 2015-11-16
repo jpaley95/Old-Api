@@ -79,9 +79,9 @@ class UsersController < ApplicationController
     whitelist = [
       :username, :email, :password,
       :first_name, :last_name,
-      :overview, :biography, :headline, :ask_about,
-      :website, :facebook, :twitter, :linkedin, :github,
-      :birthday, :gender, :looking_for,
+      :birthday, :gender,
+      :headline, :biography, :ask_about, :focus,
+      :website, :facebook, :linkedin, :twitter, :github,
       roles: [],
       skills: [],
       interests: [],

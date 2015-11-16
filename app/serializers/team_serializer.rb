@@ -2,7 +2,7 @@ class TeamSerializer < ActiveModel::Serializer
   ## Attributes
   attributes :id,
              :username, :name,
-             :tagline, :contact, :summary,
+             :tagline, :contact, :summary, :stage,
              :website, :facebook, :twitter, :linkedin, :github,
              :sectors,
              :founded_at,

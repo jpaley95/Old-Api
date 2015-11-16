@@ -1,11 +1,11 @@
 class UserSerializer < ActiveModel::Serializer
   ## Attributes
   attributes :id,
+             :username, :email,
              :first_name, :last_name,
              :birthday, :gender,
-             :email, :username,
-             :headline, :overview, :ask_about, :looking_for,
-             :website, :facebook, :linkedin, :twitter,
+             :headline, :biography, :ask_about, :focus,
+             :website, :facebook, :linkedin, :twitter, :github,
              :status, :privacy,
              :created_at, :updated_at, :online_at
   

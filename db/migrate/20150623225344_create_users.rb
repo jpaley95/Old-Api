@@ -8,7 +8,6 @@ class CreateUsers < ActiveRecord::Migration
       t.integer :gender
       
       # Biographical information
-      t.text :overview
       t.text :biography
       t.text :goals
       t.text :awards
@@ -16,7 +15,7 @@ class CreateUsers < ActiveRecord::Migration
       # Status information
       t.string  :headline
       t.string  :ask_about
-      t.integer :looking_for
+      t.integer :focus
       
       # Social information
       t.string :website
