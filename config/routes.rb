@@ -20,20 +20,19 @@ Rails.application.routes.draw do
   
   
   ## User, UserFollower, Education, Experience, School
-  resources :schools, only: [:index, :create, :show, :update, :destroy]
   resources :educations, only: [:index, :create, :show, :update, :destroy]
   resources :experiences, only: [:index, :create, :show, :update, :destroy]
   resources :users, only: [:index, :create, :show, :update, :destroy] do
-    resources :followers, only: [:index, :create, :destroy], controller: :user_followers
-    resources :following, only: [:index                   ], controller: :user_following
+    #resources :followers, only: [:index, :create, :show, :create, :destroy], controller: :user_followers
+    #resources :following, only: [:index                                   ], controller: :user_following
   end
   
   
   ## Community, CommunityMember, Resource, Category
   resources :resources, only: [:index, :create, :show, :update, :destroy]
-  resources :categories, only: [:show]
+  resources :categories, only: [:index, :show]
   resources :communities, only: [:index, :create, :show, :update, :destroy] do
-    resources :members, only: [:index, :update, :destroy], controller: :community_members
+    resources :members, only: [:index, :create, :show, :update, :destroy], controller: :community_members
   end
   
   
@@ -42,13 +41,13 @@ Rails.application.routes.draw do
   resources :success_metric, only: [:index, :create, :show, :update, :destroy]
   resources :metric_change, only: [:index, :create, :show, :update, :destroy]
   resources :teams, only: [:index, :create, :show, :update, :destroy] do
-    resources :members, only: [:index, :update, :destroy], controller: :team_members
+    resources :members, only: [:index, :create, :show, :update, :destroy], controller: :team_members
   end
   
   
   ## Listing, ListingMember
   resources :listings, only: [:index, :create, :show, :update, :destroy] do
-    resources :members, only: [:index, :create, :update, :destroy], controller: :listing_members
+    resources :members, only: [:index, :create, :show, :update, :destroy], controller: :listing_members
   end
   
   
@@ -57,15 +56,12 @@ Rails.application.routes.draw do
   resources :messages, only: [:index, :create, :show, :update, :destroy]
   
   
-  ## Tag
-  
-  
   ## File
   resources :files, only: [:index, :create, :show, :update, :destroy]
   
   
   ## Handle
-  resources :handles, only: [:index, :show]
+  # resources :handles, only: [:index, :show]
   
   
   ## Request

@@ -1,9 +1,6 @@
 class CreateMessages < ActiveRecord::Migration
   def change
     create_table :messages do |t|
-      ## Author
-      t.belongs_to :handle, null: false, index: true
-      
       ## User who wrote the message
       t.belongs_to :user, null: false, index: true
       

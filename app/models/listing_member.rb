@@ -16,6 +16,6 @@ class ListingMember < ActiveRecord::Base
   
   
   ## Validation
-  validates :user, presence: true
+  validates :user,    presence: true
   validates :listing, presence: true
 end

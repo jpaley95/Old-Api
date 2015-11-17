@@ -3,6 +3,7 @@ class CreateListings < ActiveRecord::Migration
     create_table :listings do |t|
       ## Creator
       t.belongs_to :handle, null: false, index: true
+      t.belongs_to :user,   null: false, index: true
       
       ## Textual information
       t.string :title, null: false
@@ -26,13 +27,13 @@ class CreateListings < ActiveRecord::Migration
       t.datetime :closed_at
       
       ## Salary information
-      t.integer :salaryMin
-      t.integer :salaryMax
-      t.integer :salaryPeriod # (hour, week, month, year)
+      t.integer :salary_min
+      t.integer :salary_max
+      t.integer :salary_period # (hour, week, month, year)
       
       ## Equity information
-      t.integer :equityMin
-      t.integer :equityMax
+      t.integer :equity_min
+      t.integer :equity_max
       
       ## Privacy
       t.belongs_to :privacy, null: false, index: true

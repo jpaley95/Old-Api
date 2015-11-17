@@ -34,6 +34,7 @@ class Team < ActiveRecord::Base
   has_and_belongs_to_many :kpis_permissions,     class_name: :Permission, join_table: :team_kpis_permissions
   has_and_belongs_to_many :profile_permissions,  class_name: :Permission, join_table: :team_profile_permissions
   has_and_belongs_to_many :posts_permissions,    class_name: :Permission, join_table: :team_posts_permissions
+  has_and_belongs_to_many :inbox_permissions,    class_name: :Permission, join_table: :team_inbox_permissions
   
   has_and_belongs_to_many :kpis_privacies,    class_name: :Privacy, join_table: :team_kpis_privacies
   has_and_belongs_to_many :contact_privacies, class_name: :Privacy, join_table: :team_contact_privacies
@@ -93,6 +94,7 @@ class Team < ActiveRecord::Base
     self.kpis_permissions     = Permission.construct(hash[:kpis])
     self.profile_permissions  = Permission.construct(hash[:profile])
     self.posts_permissions    = Permission.construct(hash[:posts])
+    self.inbox_permissions    = Permission.construct(hash[:inbox])
   end
   
   
@@ -117,18 +119,22 @@ class Team < ActiveRecord::Base
   
   # Checks if a team can be written by a certain user
   def can_be_written_by?(user, type_of_data)
-    case type_of_data
+    permissions = case type_of_data
     when :listings
-      listings_permissions.include?(role_of(user).pluralize)
+      listings_permissions
     when :kpis
-      kpis_permissions.include?(role_of(user).pluralize)
+      kpis_permissions
     when :profile
-      profile_permissions.include?(role_of(user).pluralize)
+      profile_permissions
     when :posts
-      posts_permissions.include?(role_of(user).pluralize)
+      posts_permissions
+    when :inbox
+      inbox_permissions
     else
-      false
+      []
     end
+    
+    permissions.include?(role_of(user).pluralize)
   end
   
   # Gets a user's role in the team

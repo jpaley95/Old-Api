@@ -36,7 +36,7 @@ class Request < ActiveRecord::Base
   
   ## Custom validation to ensure an email or an actor is present but not both
   def email_or_actor_required
-    if email.blank? && actor.blank? || email.present? && actor.present?
+    unless email.present? ^ actor.present?
       errors.add(:email, 'or actor must be specified, but not both')
       errors.add(:actor, 'or email must be specified, but not both')
     end

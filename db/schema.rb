@@ -11,15 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151016171359) do
+ActiveRecord::Schema.define(version: 20151116191042) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "categories", force: :cascade do |t|
-    t.string "name",        null: false
-    t.text   "description"
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
+
+  add_index "categories", ["name"], name: "index_categories_on_name", unique: true, using: :btree
 
   create_table "communities", force: :cascade do |t|
     t.string   "name",                     null: false
@@ -83,8 +86,9 @@ ActiveRecord::Schema.define(version: 20151016171359) do
   add_index "degrees", ["name"], name: "index_degrees_on_name", unique: true, using: :btree
 
   create_table "educations", force: :cascade do |t|
-    t.integer  "school_id",   null: false
-    t.integer  "degree_id"
+    t.integer  "school_id"
+    t.string   "school_name"
+    t.integer  "degree_id",   null: false
     t.date     "started_at"
     t.date     "finished_at"
     t.text     "grades"
@@ -180,6 +184,8 @@ ActiveRecord::Schema.define(version: 20151016171359) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.integer  "team_id",                      null: false
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   add_index "kpis", ["team_id"], name: "index_kpis_on_team_id", using: :btree
@@ -254,7 +260,6 @@ ActiveRecord::Schema.define(version: 20151016171359) do
   add_index "majors", ["user_id", "field_id"], name: "index_majors_on_user_id_and_field_id", unique: true, using: :btree
 
   create_table "messages", force: :cascade do |t|
-    t.integer  "handle_id",  null: false
     t.integer  "user_id",    null: false
     t.text     "content",    null: false
     t.integer  "thread_id",  null: false
@@ -262,16 +267,17 @@ ActiveRecord::Schema.define(version: 20151016171359) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "messages", ["handle_id"], name: "index_messages_on_handle_id", using: :btree
   add_index "messages", ["thread_id"], name: "index_messages_on_thread_id", using: :btree
   add_index "messages", ["user_id"], name: "index_messages_on_user_id", using: :btree
 
   create_table "metric_changes", force: :cascade do |t|
-    t.text    "comment"
-    t.integer "old_progress", null: false
-    t.integer "new_progress", null: false
-    t.integer "metric_id",    null: false
-    t.integer "user_id",      null: false
+    t.text     "comment"
+    t.integer  "old_progress", null: false
+    t.integer  "new_progress", null: false
+    t.integer  "metric_id",    null: false
+    t.integer  "user_id",      null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   add_index "metric_changes", ["metric_id"], name: "index_metric_changes_on_metric_id", using: :btree
@@ -351,12 +357,10 @@ ActiveRecord::Schema.define(version: 20151016171359) do
 
   create_table "resources", force: :cascade do |t|
     t.string   "name",         null: false
-    t.string   "contact"
     t.text     "overview"
     t.string   "website"
     t.string   "facebook"
     t.string   "twitter"
-    t.string   "linkedin"
     t.integer  "privacy_id",   null: false
     t.integer  "community_id", null: false
     t.integer  "location_id"
@@ -392,9 +396,11 @@ ActiveRecord::Schema.define(version: 20151016171359) do
   add_index "skills", ["user_id", "tag_id"], name: "index_skills_on_user_id_and_tag_id", unique: true, using: :btree
 
   create_table "success_metrics", force: :cascade do |t|
-    t.text    "description"
-    t.integer "progress",    default: 0, null: false
-    t.integer "kpi_id",                  null: false
+    t.text     "description"
+    t.integer  "progress",    default: 0, null: false
+    t.integer  "kpi_id",                  null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   add_index "success_metrics", ["kpi_id"], name: "index_success_metrics_on_kpi_id", using: :btree
@@ -424,6 +430,15 @@ ActiveRecord::Schema.define(version: 20151016171359) do
   end
 
   add_index "team_followers", ["team_id", "user_id"], name: "index_team_followers_on_team_id_and_user_id", unique: true, using: :btree
+
+  create_table "team_inbox_permissions", force: :cascade do |t|
+    t.integer  "team_id",       null: false
+    t.integer  "permission_id", null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+  end
+
+  add_index "team_inbox_permissions", ["team_id", "permission_id"], name: "index_team_inbox_permissions_on_team_id_and_permission_id", unique: true, using: :btree
 
   create_table "team_kpis_permissions", force: :cascade do |t|
     t.integer  "team_id",       null: false
@@ -456,6 +471,7 @@ ActiveRecord::Schema.define(version: 20151016171359) do
     t.integer  "user_id",    null: false
     t.integer  "team_id",    null: false
     t.integer  "role_id",    null: false
+    t.string   "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -485,6 +501,7 @@ ActiveRecord::Schema.define(version: 20151016171359) do
     t.string   "tagline"
     t.string   "contact"
     t.text     "summary"
+    t.string   "stage"
     t.string   "website"
     t.string   "facebook"
     t.string   "twitter"
@@ -552,13 +569,12 @@ ActiveRecord::Schema.define(version: 20151016171359) do
     t.string   "last_name"
     t.date     "birthday"
     t.integer  "gender"
-    t.text     "overview"
     t.text     "biography"
     t.text     "goals"
     t.text     "awards"
     t.string   "headline"
     t.string   "ask_about"
-    t.integer  "looking_for"
+    t.integer  "focus"
     t.string   "website"
     t.string   "facebook"
     t.string   "twitter"

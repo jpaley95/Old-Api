@@ -1,7 +1,6 @@
 class ThreadSerializer < ActiveModel::Serializer
   ## Attributes
-  attributes :id, :type,
-             :created_at
+  attributes :id, :type, :created_at
   
   
   ## Relationships

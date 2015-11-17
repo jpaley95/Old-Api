@@ -196,10 +196,12 @@ class User < ActiveRecord::Base
   
   # Other side of access control (checking if a user can read another user)
   def can_be_read_by?(user, type_of_data = nil)
+    return true if user === self
+    
     case type_of_data
     when :contact
       privacies = contact_privacies.map(&:name)
-      self === user || privacies.include?('public') ||
+      privacies.include?('public') ||
       privacies.include?('communities') && neighbors.include?(user) ||
       privacies.include?('teams')       && teammates.include?(user)
     else
@@ -209,7 +211,7 @@ class User < ActiveRecord::Base
   
   # Other side of access control (checking if a user can write another user)
   def can_be_written_by?(user, type_of_data = nil)
-    self === user
+    user === self
   end
   
   

@@ -57,11 +57,11 @@ class MessagesController < ApplicationController
   def authorize_action!
     case action_name
     when 'create', 'update', 'destroy'
-      unless current_user.can_write?(@message)
+      unless current_user === @message.user
         raise CustomException::Forbidden
       end
     when 'show'
-      unless current_user.can_read?(@message)
+      unless current_user.can_write?(@message.thread)
         raise CustomException::Forbidden
       end
     end
@@ -80,17 +80,11 @@ class MessagesController < ApplicationController
   ##   strong parameter feature
   ## Uses @message, action_name, and current_user
   def param_whitelist
-    whitelist = [
-      :content,
-      :author_id,
-      :thread_id
-    ]
-    
-    unless action_name === 'create'
-      whitelist.delete(:author_id)
-      whitelist.delete(:thread_id)
+    case action_name
+    when 'create'
+      [:content, :author_id, :thread_id]
+    else
+      [:content]
     end
-    
-    whitelist
   end
 end

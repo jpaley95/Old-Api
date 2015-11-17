@@ -47,15 +47,8 @@ class ThreadsController < ApplicationController
   ## Checks that current_user can perform action_name on @thread.
   ## Throws a CustomException::Forbidden exception if the action is forbidden.
   def authorize_action!
-    case action_name
-    when 'create', 'update'
-      unless current_user.can_write?(@thread)
-        raise CustomException::Forbidden
-      end
-    when 'show'
-      unless current_user.can_read?(@thread)
-        raise CustomException::Forbidden
-      end
+    unless current_user.can_write?(@thread)
+      raise CustomException::Forbidden
     end
   end
   
@@ -72,17 +65,11 @@ class ThreadsController < ApplicationController
   ##   strong parameter feature
   ## Uses @thread, action_name, and current_user
   def param_whitelist
-    whitelist = [
-      :type,
-      :author_id,
-      :participant_ids
-    ]
-    
-    unless action_name === 'create'
-      whitelist.delete(:type)
-      whitelist.delete(:author_id)
+    case action_name
+    when 'create'
+      [:type, :author_id, :participant_ids]
+    else
+      [:participant_ids]
     end
-    
-    whitelist
   end
 end
