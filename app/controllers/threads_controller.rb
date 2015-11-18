@@ -30,11 +30,24 @@ class ThreadsController < ApplicationController
   
   
   ## PATCH/PUT /threads/:id
-  # TODO: Change this method to check participant_ids
   def update
     @thread = Thread.find params[:id]
     authorize_action!
-    @thread.update!(strong_params)
+    if params[:thread] && params[:thread][:participant_ids] && params[:thread][:participant_ids].is_a?(Array)
+      participant_ids = params[:thread][:participant_ids]
+      
+      # Loop through removed participant ids and make sure the user is allowed
+      #   to remove them
+      removed_participant_ids = (@thread.participant_ids - params[:thread][:participant_ids])
+      removed_participants = Handle.where(id: removed_participant_ids)
+      removed_participants.each do |handle|
+        if !current_user.can_write?(handle.specific, :inbox)
+          participant_ids << id
+        end
+      end
+      
+      @thread.update!(participant_ids: participant_ids)
+    end
     render json: @thread, context: current_user
   end
   

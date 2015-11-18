@@ -182,40 +182,16 @@ class Community < ActiveRecord::Base
   ## Access Control
   # Checks if a community can be read by a certain user
   def can_be_read_by?(user, type_of_data)
-    case type_of_data
-    when :events
-      events_privacy.name === 'public' || role_of(user) !== 'none'
-    when :resources
-      resources_privacy.name === 'public' || role_of(user) !== 'none'
-    else
-      true
-    end
+    privacy = [type_of_data, 'privacy'].compact.join('_').send
+    privacy.name === 'public' || role_of(user) !== 'none'
   end
   
   # Checks if a community can be written by a certain user
   def can_be_written_by?(user, type_of_data)
-    permission = case type_of_data
-    when :profile
-      profile_permission.name
-    when :members
-      members_permission.name
-    when :children
-      children_permission.name
-    when :statistics
-      statistics_permission.name
-    when :posts
-      posts_permission.name
-    when :listings
-      listings_permission.name
-    when :resources
-      resources_permission.name
-    when :events
-      events_permission.name
-    end
-    
-    role_of(user) === 'owner' ||
-    role_of(user) === 'administrator' && ['administrators', 'members'].include?(permission) ||
-    role_of(user) === 'member'        && [                  'members'].include?(permission)
+    permission = [type_of_data, 'permission'].compact.join('_').send
+    roles = ['owner', 'administrator', 'member']
+    roles.slice!(0, roles.find_index(permission.name.singularize) + 1)
+    roles.include?(role_of(user))
   end
   
   # Gets a user's role in the community

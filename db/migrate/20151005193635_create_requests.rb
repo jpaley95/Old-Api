@@ -10,10 +10,10 @@ class CreateRequests < ActiveRecord::Migration
       t.datetime :denied_at
       
       ## Enumerated information
-      t.integer :role
       t.integer :category, null: false
       
       ## Relationships
+      t.belongs_to :role, index: true
       t.belongs_to :requestor,  null: false, index: true
       t.belongs_to :actor,                   index: true
       t.belongs_to :initiator,  null: false, index: true
