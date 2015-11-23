@@ -10,6 +10,7 @@ class Document < File
   # t.integer  "user_id",              null: false
   # t.integer  "owner_id",             null: false
   # t.string   "owner_type",           null: false
+  # t.string   "owner_association",    null: false
   # t.datetime "created_at",           null: false
   # t.datetime "updated_at",           null: false
   

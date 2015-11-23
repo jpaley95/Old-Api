@@ -52,16 +52,16 @@ class ResourcesController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @resource.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     case action_name
     when 'create', 'update', 'destroy'
       unless current_user.can_write?(@resource.community, :resources)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     when 'show'
       unless current_user.can_read?(@resource.community, :resources) && current_user.can_read?(@resource)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     end
   end

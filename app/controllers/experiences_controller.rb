@@ -51,10 +51,10 @@ class ExperiencesController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @experience.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     unless @experience.user === current_user
-      raise CustomException::Forbidden
+      raise Exceptions::Forbidden
     end
   end
   

@@ -55,20 +55,20 @@ class TeamsController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @team.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     case action_name
     when 'create'
       unless @team.parent.present? && current_user.can_write?(@team.parent, :children)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     when 'update'
       unless current_user.can_write?(@team, :profile)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     when 'destroy'
       unless current_user.role_in(@team) === 'owner'
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     end
   end

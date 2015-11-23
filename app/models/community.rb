@@ -61,8 +61,8 @@ class Community < ActiveRecord::Base
   belongs_to :events_privacy,    class_name: :Privacy
   belongs_to :resources_privacy, class_name: :Privacy
   
-  has_one :logo,   class_name: :Image, as: :owner
-  has_one :avatar, class_name: :Image, as: :owner
+  has_one :logo,   class_name: :Image, as: :owner, -> { where owner_association: :logo   }
+  has_one :avatar, class_name: :Image, as: :owner, -> { where owner_association: :avatar }
   
   
   

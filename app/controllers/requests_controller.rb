@@ -1,49 +1,49 @@
-class PostsController < ApplicationController
+class RequestsController < ApplicationController
   ## Filters and actions
   before_action :authenticate_user!
   
   
   
-  ## GET /posts
+  ## GET /requests
   def index
-    @posts = Post.all
-    render json: @posts, context: current_user
+    @requests = Request.all
+    render json: @requests, context: current_user
   end
   
   
-  ## POST /posts
+  ## POST /requests
   def create
-    @post = Post.new(strong_params)
-    @post.user = current_user
+    @request = Request.new(strong_params)
+    @request.user = current_user
     authorize_action!
-    @post.save!
-    render json: @post, context: current_user
+    @request.save!
+    render json: @request, context: current_user
   end
   
   
-  ## GET /posts/:id
+  ## GET /requests/:id
   def show
-    @post = Post.find params[:id]
+    @request = Request.find params[:id]
     authorize_action!
-    render json: @post, context: current_user
+    render json: @request, context: current_user
   end
   
   
-  ## PATCH/PUT /posts/:id
+  ## PATCH/PUT /requests/:id
   def update
-    @post = Post.find params[:id]
+    @request = Request.find params[:id]
     authorize_action!
-    @post.update!(strong_params)
-    render json: @post, context: current_user
+    @request.update!(strong_params)
+    render json: @request, context: current_user
   end
   
   
-  ## DELETE /posts/:id
+  ## DELETE /requests/:id
   def destroy
-    @post = Post.find params[:id]
+    @request = Request.find params[:id]
     authorize_action!
-    @post.destroy!
-    render json: @post, context: current_user
+    @request.destroy!
+    render json: @request, context: current_user
   end
   
   
@@ -52,17 +52,17 @@ class PostsController < ApplicationController
   
   
   
-  ## Checks that current_user can perform action_name on @post.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Checks that current_user can perform action_name on @request.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     case action_name
     when 'create', 'update', 'destroy'
-      unless current_user.can_write?(@post)
-        raise CustomException::Forbidden
+      unless current_user.can_write?(@request)
+        raise Exceptions::Forbidden
       end
     when 'show'
-      unless current_user.can_read?(@post)
-        raise CustomException::Forbidden
+      unless current_user.can_read?(@request)
+        raise Exceptions::Forbidden
       end
     end
   end
@@ -71,14 +71,14 @@ class PostsController < ApplicationController
   
   ## Creates a strong parameter hash for mass assignment
   def strong_params
-    params.require(:post).permit(param_whitelist)
+    params.require(:request).permit(param_whitelist)
   end
   
   
   
   ## Prepares a whitelist to pass into the permit() method provided by Rails'
   ##   strong parameter feature
-  ## Uses @post, action_name, and current_user
+  ## Uses @request, action_name, and current_user
   def param_whitelist
     whitelist = [
       :message,

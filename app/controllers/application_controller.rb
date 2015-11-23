@@ -28,15 +28,15 @@ class ApplicationController < ActionController::Base
     render json: exception, status: :not_found
   end
   
-  rescue_from CustomException::UnprocessableEntity do |exception|
+  rescue_from Exceptions::UnprocessableEntity do |exception|
     render nothing: true, status: :unprocessable_entity
   end
   
-  rescue_from CustomException::Forbidden do |exception|
+  rescue_from Exceptions::Forbidden do |exception|
     render nothing: true, status: :forbidden
   end
   
-  rescue_from CustomException::Unauthorized do |exception|
+  rescue_from Exceptions::Unauthorized do |exception|
     render nothing: true, status: :unauthorized
   end
   

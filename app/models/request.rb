@@ -16,7 +16,7 @@ class Request < ActiveRecord::Base
   
   
   ## Relationships
-  has_one :resume, class_name: :Document, as: :owner
+  has_one :resume, class_name: :Document, as: :owner, -> { where owner_association: :resume }
   
   belongs_to :role
   

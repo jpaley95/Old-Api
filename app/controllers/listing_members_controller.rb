@@ -43,16 +43,16 @@ class ListingMembersController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @listing_member.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     case action_name
     when 'update', 'destroy'
       unless current_user.can_write?(@listing_member.listing.handle, :listings)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     when 'show'
       unless current_user.can_read?(@listing_member.listing)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     end
   end

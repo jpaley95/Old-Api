@@ -45,7 +45,7 @@ class Team < ActiveRecord::Base
   
   belongs_to :location
   
-  has_one :avatar, class_name: :Image, as: :owner
+  has_one :avatar, class_name: :Image, as: :owner, -> { where owner_association: :avatar }
   
   
   
@@ -95,6 +95,25 @@ class Team < ActiveRecord::Base
     self.profile_permissions  = Permission.construct(hash[:profile])
     self.posts_permissions    = Permission.construct(hash[:posts])
     self.inbox_permissions    = Permission.construct(hash[:inbox])
+  end
+  
+  
+  
+  ## Provide a method to set the attributes of the location association
+  def location=(data)
+    if self.location.present? && !data.is_a?(Hash)
+      self.location.destroy
+    end
+    
+    if data.is_a?(Hash)
+      if self.location.present?
+        self.location.attributes = data
+      else
+        super(Location.new data)
+      end
+    else
+      super(data)
+    end
   end
   
   

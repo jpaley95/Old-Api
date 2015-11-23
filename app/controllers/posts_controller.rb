@@ -53,16 +53,16 @@ class PostsController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @post.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     case action_name
     when 'create', 'update', 'destroy'
       unless current_user.can_write?(@post)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     when 'show'
       unless current_user.can_read?(@post)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     end
   end

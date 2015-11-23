@@ -15,7 +15,9 @@ class CreateFiles < ActiveRecord::Migration
       t.belongs_to :user, null: false, index: true
       
       ## Owner
-      t.belongs_to :owner, null: false, index: true, polymorphic: true
+      t.belongs_to :owner, null: false, polymorphic: true
+      t.string :owner_association, null: false
+      t.index [:owner_id, :owner_type, :owner_association]
       
       ## Always include timestamps
       t.timestamps null: false

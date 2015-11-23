@@ -211,8 +211,9 @@ ActiveRecord::Schema.define(version: 20151116191042) do
   add_index "listing_skills", ["listing_id", "tag_id"], name: "index_listing_skills_on_listing_id_and_tag_id", unique: true, using: :btree
 
   create_table "listings", force: :cascade do |t|
-    t.integer  "handle_id",    null: false
-    t.string   "title",        null: false
+    t.integer  "handle_id",     null: false
+    t.integer  "user_id",       null: false
+    t.string   "title",         null: false
     t.text     "description"
     t.integer  "location_id"
     t.integer  "positions"
@@ -221,19 +222,20 @@ ActiveRecord::Schema.define(version: 20151116191042) do
     t.datetime "started_at"
     t.datetime "finished_at"
     t.datetime "closed_at"
-    t.integer  "salaryMin"
-    t.integer  "salaryMax"
-    t.integer  "salaryPeriod"
-    t.integer  "equityMin"
-    t.integer  "equityMax"
-    t.integer  "privacy_id",   null: false
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.integer  "salary_min"
+    t.integer  "salary_max"
+    t.integer  "salary_period"
+    t.integer  "equity_min"
+    t.integer  "equity_max"
+    t.integer  "privacy_id",    null: false
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   add_index "listings", ["handle_id"], name: "index_listings_on_handle_id", using: :btree
   add_index "listings", ["location_id"], name: "index_listings_on_location_id", using: :btree
   add_index "listings", ["privacy_id"], name: "index_listings_on_privacy_id", using: :btree
+  add_index "listings", ["user_id"], name: "index_listings_on_user_id", using: :btree
 
   create_table "locations", force: :cascade do |t|
     t.string   "description"
@@ -322,8 +324,8 @@ ActiveRecord::Schema.define(version: 20151116191042) do
     t.string   "email"
     t.datetime "accepted_at"
     t.datetime "denied_at"
-    t.integer  "role"
     t.integer  "category",      null: false
+    t.integer  "role_id"
     t.integer  "requestor_id",  null: false
     t.integer  "actor_id"
     t.integer  "initiator_id",  null: false
@@ -335,6 +337,7 @@ ActiveRecord::Schema.define(version: 20151116191042) do
   add_index "requests", ["actor_id"], name: "index_requests_on_actor_id", using: :btree
   add_index "requests", ["initiator_id"], name: "index_requests_on_initiator_id", using: :btree
   add_index "requests", ["requestor_id"], name: "index_requests_on_requestor_id", using: :btree
+  add_index "requests", ["role_id"], name: "index_requests_on_role_id", using: :btree
   add_index "requests", ["terminator_id"], name: "index_requests_on_terminator_id", using: :btree
 
   create_table "resource_categories", force: :cascade do |t|

@@ -42,16 +42,16 @@ class TeamMembersController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @team_member.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     case action_name
     when 'update'
       unless current_user.can_write?(@team_member.team, :members)
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     when 'destroy'
       unless current_user.can_write?(@team_member.team, :members) || current_user === @team_member.user
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     end
   end

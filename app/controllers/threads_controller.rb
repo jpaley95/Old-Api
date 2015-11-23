@@ -58,10 +58,10 @@ class ThreadsController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @thread.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     unless current_user.can_write?(@thread)
-      raise CustomException::Forbidden
+      raise Exceptions::Forbidden
     end
   end
   

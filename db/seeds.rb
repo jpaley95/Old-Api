@@ -1,3 +1,7 @@
+require 'csv'
+
+
+
 ## Seed roles table
 Role.create! [
   { name: 'entrepreneur'  }, # user
@@ -57,3 +61,36 @@ Degree.create! [
   { name: 'Engineer\'s Degree'                   },
   { name: 'Other'                                }
 ]
+
+
+## Seed schools table
+CSV.foreach("#{Rails.root}/db/seed/schools.csv", headers: true) do |row|
+  location = {
+    street: row['street'],
+    city:   row['city'],
+    state:  row['state'],
+    zip:    row['zip'].to_s.gsub(/[^\d-]/, '')
+  }
+  
+  if School.joins(:location).where({ name: row['name'], locations: location }).count == 0
+    School.create!({ name: row['name'], location: location })
+  end
+end
+
+
+## Seed users table
+CSV.foreach("#{Rails.root}/db/seed/users.csv", headers: true) do |row|
+  user = User.create!({
+    created_at: row['Timestamp'],
+    first_name: row['First Name'],
+    last_name:  row['Last Name'],
+    email:      row['Email'],
+    username:   row['Username'],
+    skills:     row['Your Skills (separated by comma) '].to_s.strip!.split(/[\s,]*,[\s,]*/).compact!,
+    interests:  row['Your Interests (seperated by comma)'].to_s.strip!.split(/[\s,]*,[\s,]*/).compact!,
+    location: { description: row['Location'] },
+    birthday:   row['Birthday']
+  })
+  
+  Image.new({ payload: URI.parse(row['Photo']) })
+end

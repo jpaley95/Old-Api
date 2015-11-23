@@ -51,10 +51,10 @@ class EducationsController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @education.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     unless @education.user === current_user
-      raise CustomException::Forbidden
+      raise Exceptions::Forbidden
     end
   end
   

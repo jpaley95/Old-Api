@@ -72,7 +72,7 @@ class User < ActiveRecord::Base
   
   has_and_belongs_to_many :contact_privacies, class_name: :Privacy, join_table: :user_contact_privacies
   
-  has_one :avatar, class_name: :Image, as: :owner
+  has_one :avatar, class_name: :Image, as: :owner, -> { where owner_association: :avatar }
   
   
   

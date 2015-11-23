@@ -22,7 +22,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(strong_params)
     @user.save!
-    render json: @user, context: current_user, status: :created
+    render json: @user, context: @user, status: :created
   end
   
   
@@ -49,12 +49,12 @@ class UsersController < ApplicationController
   
   
   ## Checks that current_user can perform action_name on @community.
-  ## Throws a CustomException::Forbidden exception if the action is forbidden.
+  ## Throws a Exceptions::Forbidden exception if the action is forbidden.
   def authorize_action!
     case action_name
     when 'destroy'
       unless current_user === @user
-        raise CustomException::Forbidden
+        raise Exceptions::Forbidden
       end
     end
   end
@@ -72,7 +72,7 @@ class UsersController < ApplicationController
   ##   strong parameter feature
   ## Uses @user, action_name, and current_user
   def param_whitelist
-    if @user.present? && current_user !== @user
+    if @user.present? && current_user != @user
       return [:followed]
     end
     

@@ -41,5 +41,8 @@ module Inverge
         resource '*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
+    
+    # Autoload lib directory
+    config.autoload_paths << "#{Rails.root}/lib"
   end
 end

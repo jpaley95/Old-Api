@@ -26,7 +26,7 @@ class Resource < ActiveRecord::Base
   has_and_belongs_to_many :tags,       join_table: :resource_tags
   has_and_belongs_to_many :categories, join_table: :resource_categories
   
-  has_one :avatar, class_name: :Image, as: :owner
+  has_one :avatar, class_name: :Image, as: :owner, -> { where owner_association: :avatar }
   
   
   
