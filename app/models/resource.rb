@@ -8,6 +8,7 @@ class Resource < ActiveRecord::Base
   # t.integer  "privacy_id",   null: false
   # t.integer  "community_id", null: false
   # t.integer  "location_id"
+  # t.integer  "avatar_id"
   # t.datetime "created_at",   null: false
   # t.datetime "updated_at",   null: false
   
@@ -21,12 +22,13 @@ class Resource < ActiveRecord::Base
   ## Relationships
   belongs_to :community
   belongs_to :privacy
-  belongs_to :location
   
   has_and_belongs_to_many :tags,       join_table: :resource_tags
   has_and_belongs_to_many :categories, join_table: :resource_categories
   
-  has_one :avatar, class_name: :Image, as: :owner, -> { where owner_association: :avatar }
+  belongs_to :location, autosave: true, dependent: :destroy
+  
+  belongs_to :avatar, class_name: :Image, dependent: :destroy
   
   
   

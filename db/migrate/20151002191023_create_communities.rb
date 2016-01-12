@@ -39,6 +39,10 @@ class CreateCommunities < ActiveRecord::Migration
       # Location
       t.belongs_to :location, index: true
       
+      # Images
+      t.belongs_to :logo,   index: true
+      t.belongs_to :avatar, index: true
+      
       # Parent community
       t.belongs_to :community, index: true
       

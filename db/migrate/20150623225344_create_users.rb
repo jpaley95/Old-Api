@@ -30,6 +30,9 @@ class CreateUsers < ActiveRecord::Migration
       # Location
       t.belongs_to :location, index: true
       
+      # Avatar
+      t.belongs_to :avatar, index: true
+      
       
       
       

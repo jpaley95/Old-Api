@@ -15,6 +15,7 @@ class Team < ActiveRecord::Base
   # t.boolean  "social"
   # t.date     "founded_at"
   # t.integer  "location_id"
+  # t.integer  "avatar_id"
   # t.datetime "created_at",  null: false
   # t.datetime "updated_at",  null: false
   
@@ -43,9 +44,9 @@ class Team < ActiveRecord::Base
   
   has_many :kpis
   
-  belongs_to :location
+  belongs_to :location, autosave: true, dependent: :destroy
   
-  has_one :avatar, class_name: :Image, as: :owner, -> { where owner_association: :avatar }
+  belongs_to :avatar, class_name: :Image, dependent: :destroy
   
   
   

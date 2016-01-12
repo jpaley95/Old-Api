@@ -21,6 +21,9 @@ class CreateResources < ActiveRecord::Migration
       ## Locations
       t.belongs_to :location, index: true
       
+      ## Avatar
+      t.belongs_to :avatar, index: true
+      
       ## Always include timestamps
       t.timestamps null: false
     end

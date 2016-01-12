@@ -24,6 +24,8 @@ class Community < ActiveRecord::Base
   # t.integer  "events_privacy_id",        null: false
   # t.integer  "resources_privacy_id",     null: false
   # t.integer  "location_id"
+  # t.integer  "logo_id"
+  # t.integer  "avatar_id"
   # t.integer  "community_id"
   # t.datetime "created_at",               null: false
   # t.datetime "updated_at",               null: false
@@ -47,8 +49,6 @@ class Community < ActiveRecord::Base
   
   has_and_belongs_to_many :teams, join_table: :community_teams
   
-  belongs_to :location, autosave: true, dependent: :destroy
-  
   belongs_to :profile_permission,    class_name: :Permission
   belongs_to :members_permission,    class_name: :Permission
   belongs_to :children_permission,   class_name: :Permission
@@ -61,8 +61,10 @@ class Community < ActiveRecord::Base
   belongs_to :events_privacy,    class_name: :Privacy
   belongs_to :resources_privacy, class_name: :Privacy
   
-  has_one :logo,   class_name: :Image, as: :owner, -> { where owner_association: :logo   }
-  has_one :avatar, class_name: :Image, as: :owner, -> { where owner_association: :avatar }
+  belongs_to :location, autosave: true, dependent: :destroy
+  
+  belongs_to :logo,   class_name: :Image, dependent: :destroy
+  belongs_to :avatar, class_name: :Image, dependent: :destroy
   
   
   

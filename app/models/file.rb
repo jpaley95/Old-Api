@@ -8,9 +8,6 @@ class File < ActiveRecord::Base
   # t.integer  "payload_file_size",    null: false
   # t.datetime "payload_updated_at",   null: false
   # t.integer  "user_id",              null: false
-  # t.integer  "owner_id",             null: false
-  # t.string   "owner_type",           null: false
-  # t.string   "owner_association",    null: false
   # t.datetime "created_at",           null: false
   # t.datetime "updated_at",           null: false
   
@@ -18,11 +15,9 @@ class File < ActiveRecord::Base
   
   ## Relationships
   belongs_to :user
-  belongs_to :owner, polymorphic: true
   
   
   
   ## Validation
   validates :user,  presence: true
-  validates :owner, presence: true
 end

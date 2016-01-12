@@ -14,11 +14,6 @@ class CreateFiles < ActiveRecord::Migration
       ## User who uploaded the file
       t.belongs_to :user, null: false, index: true
       
-      ## Owner
-      t.belongs_to :owner, null: false, polymorphic: true
-      t.string :owner_association, null: false
-      t.index [:owner_id, :owner_type, :owner_association]
-      
       ## Always include timestamps
       t.timestamps null: false
     end

@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   # t.string   "github"
   # t.boolean  "is_superuser",           default: false, null: false
   # t.integer  "location_id"
+  # t.integer  "avatar_id"
   # t.string   "email",                                  null: false
   # t.string   "encrypted_password",                     null: false
   # t.string   "reset_password_token"
@@ -72,7 +73,7 @@ class User < ActiveRecord::Base
   
   has_and_belongs_to_many :contact_privacies, class_name: :Privacy, join_table: :user_contact_privacies
   
-  has_one :avatar, class_name: :Image, as: :owner, -> { where owner_association: :avatar }
+  belongs_to :avatar, class_name: :Image, dependent: :destroy
   
   
   

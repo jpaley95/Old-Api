@@ -13,7 +13,7 @@ class Post < ActiveRecord::Base
   belongs_to :handle
   belongs_to :user
   belongs_to :privacy
-  has_many :files, class_name: :Image, as: :owner, -> { where owner_association: :files }
+  has_and_belongs_to_many :files, join_table: :post_files
   
   
   
